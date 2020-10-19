@@ -23,6 +23,11 @@ class Player extends EventEmitter {
 			return;
 		}
 
+		if (!keywordOrUrl) {
+			this.sendGeneralEmbed("Please enter a valid track name!.");
+			return;
+		}
+
 		youtube
 			.getTracks(keywordOrUrl)
 			.then((track) => {
