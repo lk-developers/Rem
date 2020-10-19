@@ -40,7 +40,12 @@ const getHelpEmbed = (prefix) => {
 			},
 			{
 				name: `${prefix}np`,
-				value: "Show currently playing track.\n\u200B",
+				value: "Show currently playing track.",
+				inline: true,
+			},
+			{
+				name: `${prefix}leave`,
+				value: "Leave from voice channel.\n\u200B",
 				inline: true,
 			},
 			{

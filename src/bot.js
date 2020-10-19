@@ -131,6 +131,13 @@ client.on("message", async (message) => {
 		return;
 	}
 
+	if (message.content.trim() == `${prefix}leave`) {
+		guildPlayers.delete(message.guild.id);
+		voiceChannel.leave();
+		message.react("😞");
+		return;
+	}
+
 	if (!guildPlayer) {
 		message.reply("Nothing is playing at the moment!.");
 		message.react("😡");
