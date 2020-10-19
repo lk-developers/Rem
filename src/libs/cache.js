@@ -29,7 +29,10 @@ const animeDb = low(animeAdapter);
 const youtubeDb = low(youtubeAdapter);
 
 const saveAnime = (keyword, tracks) => {
-	animeDb.get("tracks").push({ key: keyword, tracks: tracks }).write();
+	animeDb
+		.get("tracks")
+		.push({ key: keyword.toLowerCase(), tracks: tracks })
+		.write();
 };
 
 const saveYoutube = (keyword, tracks) => {
@@ -37,17 +40,11 @@ const saveYoutube = (keyword, tracks) => {
 };
 
 const getAnime = (keyword) => {
-	return animeDb
-		.get("tracks")
-		.find({ key: keyword.toLowerCase().trim() })
-		.value();
+	return animeDb.get("tracks").find({ key: keyword.toLowerCase() }).value();
 };
 
 const getYoutube = (keyword) => {
-	return youtubeDb
-		.get("tracks")
-		.find({ key: keyword.toLowerCase().trim() })
-		.value();
+	return youtubeDb.get("tracks").find({ key: keyword }).value();
 };
 
 module.exports = {

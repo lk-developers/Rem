@@ -49,15 +49,14 @@ const getTracks = async (keywordOrUrl) => {
 		});
 
 		const tracks = playlist.items
+			.filter((t) => t.title !== "[Private video]")
 			.map((t) => {
-				if (t.title.trim() == "[Private video]") return;
 				return {
 					name: t.title,
 					type: "Youtube",
 					url: t.url,
 				};
-			})
-			.filter((t) => t);
+			});
 
 		// save to cache
 		cache.saveYoutube(keywordOrUrl, tracks);
