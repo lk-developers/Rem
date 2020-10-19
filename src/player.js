@@ -33,7 +33,7 @@ class Player extends EventEmitter {
 			})
 			.catch((e) => {
 				this.emit("error", e);
-				this.sendEmbed(e);
+				this.sendGeneralEmbed(e);
 			});
 	}
 
@@ -47,7 +47,7 @@ class Player extends EventEmitter {
 			})
 			.catch((e) => {
 				this.emit("error", e);
-				this.sendEmbed(e, "Error");
+				this.sendGeneralEmbed(e, "Error");
 			});
 	}
 
@@ -55,12 +55,14 @@ class Player extends EventEmitter {
 		if (this.queue.length <= 100) {
 			this.queue = [...this.queue, ...tracks];
 			if (tracks.length == 1) {
-				this.sendEmbed(`${tracks[0].name} added to the queue.`);
+				this.sendGeneralEmbed(`${tracks[0].name} added to the queue.`);
 			} else {
-				this.sendEmbed(`${tracks.length} tracks added to the queue.`);
+				this.sendGeneralEmbed(`${tracks.length} tracks added to the queue.`);
 			}
 		} else {
-			this.sendEmbed("Queue is full!. Skip or Stop the current session first.");
+			this.sendGeneralEmbed(
+				"Queue is full!. Skip or Stop the current session first."
+			);
 		}
 	}
 
@@ -92,12 +94,20 @@ class Player extends EventEmitter {
 
 		this.state = "playing";
 
-		this.sendEmbed(
-			`Now Playing [${this.queue.length} left]`,
-			`${track.name} (${track.type})`
-		);
+		this.sendNowPlayingEmbed();
 
-		this.registerDispatcherEventListeners();
+		// register event listener for the dispatcher
+		this.dispatcher.on("finish", () => {
+			if (this.queue.length > 0) {
+				this.playTrack();
+			} else {
+				this.sendGeneralEmbed("Queue finished!");
+				this.voiceConnection.disconnect();
+				this.emit("queueFinished");
+			}
+		});
+
+		this.dispatcher.on("error", (e) => this.emit("error", e));
 	}
 
 	skip(position = null) {
@@ -106,11 +116,11 @@ class Player extends EventEmitter {
 				if (position) {
 					this.playTrack(position);
 				} else {
-					this.sendEmbed("Track Skipped!.");
+					this.sendGeneralEmbed("Track Skipped!.");
 					this.playTrack();
 				}
 			} else {
-				this.sendEmbed("There are no more tracks left!.");
+				this.sendGeneralEmbed("There are no more tracks left!.");
 			}
 		}
 	}
@@ -119,7 +129,7 @@ class Player extends EventEmitter {
 		if (this.dispatcher) {
 			this.state = "paused";
 			this.dispatcher.pause();
-			this.sendEmbed("Queue Paused!");
+			this.sendGeneralEmbed("Queue Paused!");
 		}
 	}
 
@@ -127,7 +137,7 @@ class Player extends EventEmitter {
 		if (this.dispatcher) {
 			this.state = "playing";
 			this.dispatcher.resume();
-			this.sendEmbed("Queue Resumed!");
+			this.sendGeneralEmbed("Queue Resumed!");
 		}
 	}
 
@@ -161,10 +171,14 @@ class Player extends EventEmitter {
 
 	showCurrentTrack(textChannel) {
 		if (!this.currentTrack) {
-			this.sendEmbed("Nothing is playing right now.");
+			this.sendGeneralEmbed("Nothing is playing right now.");
 			return;
 		}
 
+		this.sendNowPlayingEmbed(textChannel);
+	}
+
+	sendNowPlayingEmbed(textChannel = this.textChannel) {
 		const trackEmbed = {
 			author: {
 				name: "| Now playing",
@@ -184,21 +198,7 @@ class Player extends EventEmitter {
 		textChannel.send({ embed: trackEmbed });
 	}
 
-	registerDispatcherEventListeners() {
-		this.dispatcher.on("finish", () => {
-			if (this.queue.length > 0) {
-				this.playTrack();
-			} else {
-				this.sendEmbed("Queue finished!");
-				this.voiceConnection.disconnect();
-				this.emit("queueFinished");
-			}
-		});
-
-		this.dispatcher.on("error", (e) => this.emit("error", e));
-	}
-
-	sendEmbed(name, title = null) {
+	sendGeneralEmbed(name, title = null) {
 		const embed = {
 			author: {
 				name: `| ${name}`,
