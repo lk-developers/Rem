@@ -39,6 +39,11 @@ const getHelpEmbed = (prefix) => {
 				inline: true,
 			},
 			{
+				name: `${prefix}np`,
+				value: "Show currently playing track.\n\u200B",
+				inline: true,
+			},
+			{
 				name: "Queue commands",
 				value: "----------------------------------------",
 			},

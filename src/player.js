@@ -159,6 +159,31 @@ class Player extends EventEmitter {
 		this.textChannel.send(queue);
 	}
 
+	showCurrentTrack() {
+		if (!this.currentTrack) {
+			this.sendEmbed("Nothing is playing right now.");
+			return;
+		}
+
+		const trackEmbed = {
+			author: {
+				name: "| Now playing",
+				icon_url: "https://tinyurl.com/y4x8xlat",
+			},
+			thumbnail: {
+				url: "https://i.imgur.com/77Q5D0s.gif",
+			},
+			fields: [
+				{
+					name: `${this.currentTrack.name} (${this.currentTrack.type})`,
+					value: `Source: [Click Here](${this.currentTrack.url})`,
+				},
+			],
+		};
+
+		this.textChannel.send({ embed: trackEmbed });
+	}
+
 	registerDispatcherEventListeners() {
 		this.dispatcher.on("finish", () => {
 			if (this.queue.length > 0) {

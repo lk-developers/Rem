@@ -171,6 +171,11 @@ client.on("message", async (message) => {
 		playlists.saveToPlaylist(message.member.id, guildPlayer);
 		message.react("👍");
 	}
+
+	if (message.content.trim() == `${prefix}np`) {
+		guildPlayer.showCurrentTrack();
+		message.react("👍");
+	}
 });
 
 const registerGuildPlayerEventListeners = (message, player) => {
