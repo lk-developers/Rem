@@ -44,19 +44,10 @@ const getTrack = async (keywordOrUrl) => {
 		throw "Sorry!. I couldn't find info for that track!.";
 	});
 
-	// find a format with good audio quality
-	const format = trackInfo.formats.find(
-		(f) => f.audioQuality == "AUDIO_QUALITY_MEDIUM"
-	);
-
-	if (!format) {
-		throw "Sorry!. I couldn't find a good audio for that track!.";
-	}
-
 	const track = {
 		name: trackInfo.videoDetails.title,
 		type: "Youtube",
-		url: format.url,
+		url: youtubeLink,
 	};
 
 	// save to cache

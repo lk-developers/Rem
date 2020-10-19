@@ -1,6 +1,7 @@
 const EventEmitter = require("events");
 const themesMoe = require("./libs/themes.moe");
 const youtube = require("./libs/youtube");
+const ytdl = require("ytdl-core-discord");
 
 class Player extends EventEmitter {
 	constructor(textChannel, voiceConnection) {
@@ -64,7 +65,7 @@ class Player extends EventEmitter {
 	}
 
 	// skip to next track or play track in the given position
-	playTrack(position = null) {
+	async playTrack(position = null) {
 		let track;
 
 		if (!position) {
@@ -76,10 +77,19 @@ class Player extends EventEmitter {
 
 		this.currentTrack = track;
 		if (this.dispatcher) this.dispatcher.destroy();
-		this.dispatcher = this.voiceConnection.play(track.url, {
-			bitrate: 320,
-			volume: false,
-		});
+		if (track.type == "Youtube") {
+			this.dispatcher = this.voiceConnection.play(await ytdl(track.url), {
+				type: "opus",
+				bitrate: 320,
+				volume: false,
+			});
+		} else {
+			this.dispatcher = this.voiceConnection.play(track.url, {
+				bitrate: 320,
+				volume: false,
+			});
+		}
+
 		this.state = "playing";
 
 		this.sendEmbed(
