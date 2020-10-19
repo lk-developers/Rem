@@ -54,7 +54,7 @@ const getTracks = async (animeName) => {
 };
 
 const request = async (url) => {
-	return await (await fetch(url)).json();
+	return await (await fetch(url, { timeout: 10000 }).catch()).json();
 };
 
 module.exports = {

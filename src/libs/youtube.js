@@ -76,7 +76,9 @@ const searchInvidio = async (keyword) => {
 	while (link == null && currentTry < retries) {
 		// html response
 		const response = await (
-			await fetch(`https://tube.connect.cafe/search?q=${keyword}`)
+			await fetch(`https://tube.connect.cafe/search?q=${keyword}`, {
+				timeout: 10000,
+			}).catch()
 		).text();
 
 		const $ = cheerio.load(response);
