@@ -23,6 +23,17 @@ const saveToPlaylist = (memberId, guildPlayer) => {
 	const playlistAdapter = new FileSync(playlistPath);
 	const playlistDb = low(playlistAdapter);
 
+	// check playlist size
+	const playlistSize = playlistDb.get("tracks").value().length;
+
+	if (playlistSize == 50) {
+		sendEmbed(
+			guildPlayer.textChannel,
+			"Sorry!. Your playlist is full. Please delete some tracks first."
+		);
+		return;
+	}
+
 	// check for duplicates
 	const track = playlistDb
 		.get("tracks")
@@ -99,7 +110,7 @@ const showPlaylist = (member, textChannel) => {
 
 	let playlistStr =
 		"```diff\n" +
-		`++${member.user.username}'s Playlist\n` +
+		`++${member.user.username}'s Playlist (${tracks.length}/50 used)\n` +
 		"--___________________________________--\n\n";
 
 	tracks.forEach((t, index) => {
