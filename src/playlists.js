@@ -1,3 +1,4 @@
+const { MessageAttachment } = require("discord.js");
 const { writeFileSync, existsSync, unlinkSync } = require("fs");
 const low = require("lowdb");
 const FileSync = require("lowdb/adapters/FileSync");
@@ -93,35 +94,6 @@ const removeFromPlaylist = (memberId, trackPosition, textChannel) => {
 	sendEmbed(textChannel, "Track removed from your playlist!.");
 };
 
-const showPlaylist = (member, textChannel) => {
-	const playlistPath = `${playlistDir}/${member.id}.json`;
-
-	if (!existsSync(playlistPath)) {
-		sendEmbed(textChannel, "You don't have a playlist!.");
-		return;
-	}
-
-	const playlistAdapter = new FileSync(playlistPath);
-	const playlistDb = low(playlistAdapter);
-
-	const tracks = playlistDb.get("tracks").value();
-
-	playlistDb.set("lastRead", new Date().toISOString()).write();
-
-	let playlistStr =
-		"```diff\n" +
-		`++${member.user.username}'s Playlist (${tracks.length}/50 used)\n` +
-		"--___________________________________--\n\n";
-
-	tracks.forEach((t, index) => {
-		playlistStr += `${index + 1}) ${t.name} (${t.type})\n`;
-	});
-
-	playlistStr += "```";
-
-	textChannel.send(playlistStr);
-};
-
 const startPlaylist = (memberId, guildPlayer) => {
 	const playlistPath = `${playlistDir}/${memberId}.json`;
 
@@ -148,6 +120,59 @@ const startPlaylist = (memberId, guildPlayer) => {
 	}
 };
 
+const showPlaylist = (member, message) => {
+	const playlistPath = `${playlistDir}/${member.id}.json`;
+
+	if (!existsSync(playlistPath)) {
+		sendEmbed(message.channel, "You don't have a playlist!.");
+		message.react("😠");
+		return;
+	}
+
+	const playlistAdapter = new FileSync(playlistPath);
+	const playlistDb = low(playlistAdapter);
+
+	const tracks = playlistDb.get("tracks").value();
+
+	playlistDb.set("lastRead", new Date().toISOString()).write();
+
+	let playlistStr =
+		"```diff\n" +
+		`++${member.user.username}'s Playlist (${tracks.length}/50 used)\n` +
+		"--___________________________________--\n\n";
+
+	tracks.forEach((t, index) => {
+		playlistStr += `${index + 1}) ${t.name} (${t.type})\n`;
+	});
+
+	playlistStr += "```";
+
+	message.channel.send(playlistStr);
+	message.react("👍");
+};
+
+const exportPlaylist = (member, message) => {
+	const playlistPath = `${playlistDir}/${member.id}.json`;
+
+	if (!existsSync(playlistPath)) {
+		sendEmbed(message.channel, "You don't have a playlist!.");
+		message.react("😠");
+		return;
+	}
+
+	const attachment = new MessageAttachment(playlistPath);
+	message.channel
+		.send(`<@${member.id}>,`, attachment)
+		.then(() => message.react("👍"))
+		.catch(() => {
+			sendEmbed(
+				message.channel,
+				"I don't have permission to send attachments!."
+			);
+			message.react("😭");
+		});
+};
+
 const sendEmbed = (textChannel, name, title = null) => {
 	const embed = {
 		author: {
@@ -166,4 +191,5 @@ module.exports = {
 	removeFromPlaylist,
 	showPlaylist,
 	startPlaylist,
+	exportPlaylist,
 };

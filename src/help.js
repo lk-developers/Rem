@@ -78,7 +78,12 @@ const getHelpEmbed = (prefix) => {
 			},
 			{
 				name: `${prefix}pldel <number>`,
-				value: "Remove track from your playlist.\n\u200B",
+				value: "Remove track from your playlist.",
+				inline: true,
+			},
+			{
+				name: `${prefix}plexport`,
+				value: "Export your playlist.\n\u200B",
 				inline: true,
 			},
 			{

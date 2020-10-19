@@ -21,7 +21,19 @@ client.on("message", async (message) => {
 	if (!message.content.startsWith(prefix)) return;
 
 	if (message.content.trim() == `${prefix}help`) {
-		sendHelp(message.channel);
+		const embed = help.getHelpEmbed(prefix);
+		message.channel.send({ embed: embed });
+		message.react("👍");
+		return;
+	}
+
+	if (message.content.trim() == `${prefix}plshow`) {
+		playlists.showPlaylist(message.member, message);
+		return;
+	}
+
+	if (message.content.trim() == `${prefix}plexport`) {
+		playlists.exportPlaylist(message.member, message);
 		return;
 	}
 
@@ -105,12 +117,6 @@ client.on("message", async (message) => {
 		return;
 	}
 
-	if (message.content.trim() == `${prefix}plshow`) {
-		playlists.showPlaylist(message.member, message.channel);
-		message.react("👍");
-		return;
-	}
-
 	if (message.content.trim().startsWith(`${prefix}pldel`)) {
 		let position = message.content.trim().split(`${prefix}pldel`)[1] || null;
 		position = isNaN(position) ? null : parseInt(position);
@@ -182,12 +188,6 @@ const registerGuildPlayerEventListeners = (message, player) => {
 	player.on("error", (e) => {
 		console.log("Error happend: ", e);
 	});
-};
-
-const sendHelp = (channel) => {
-	const embed = help.getHelpEmbed(prefix);
-
-	channel.send({ embed: embed });
 };
 
 client.login(config.TOKEN);
