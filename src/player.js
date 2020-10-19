@@ -26,9 +26,7 @@ class Player extends EventEmitter {
 			.getTrack(keywordOrUrl)
 			.then((track) => {
 				// push to global tracks
-				this.queue.push(track);
-				this.sendEmbed(`${track.name} added to the queue.`);
-
+				this.addTracksToQueue([track]);
 				// start playing first track if state is null
 				if (!this.state) this.playTrack();
 			})
@@ -43,15 +41,26 @@ class Player extends EventEmitter {
 		themesMoe
 			.getTracks(animeName)
 			.then((tracks) => {
-				this.queue = [...this.queue, ...tracks];
-				this.sendEmbed(`${tracks.length} tracks added to the queue.`);
-
+				this.addTracksToQueue(tracks);
 				if (!this.state) this.playTrack();
 			})
 			.catch((e) => {
 				this.emit("error", e);
 				this.sendEmbed(e, "Error");
 			});
+	}
+
+	addTracksToQueue(tracks = []) {
+		if (this.queue.length <= 100) {
+			this.queue = [...this.queue, ...tracks];
+			if (tracks.length == 1) {
+				this.sendEmbed(`${tracks[0].name} added to the queue.`);
+			} else {
+				this.sendEmbed(`${tracks.length} tracks added to the queue.`);
+			}
+		} else {
+			this.sendEmbed("Queue is full!. Skip or Stop the current session first.");
+		}
 	}
 
 	// skip to next track or play track in the given position
@@ -123,7 +132,7 @@ class Player extends EventEmitter {
 	}
 
 	showQueue() {
-		let tracks = "--Upcoming tracks:\n";
+		let tracks = "";
 		this.queue.every((track, index) => {
 			if (index == 10) return false;
 			tracks += `(${index + 1}) ${track.name} (${track.type})\n`;
@@ -132,7 +141,9 @@ class Player extends EventEmitter {
 
 		const queue =
 			"```diff\n" +
-			`++ Current track:\n${this.currentTrack.name} (${this.currentTrack.type})\n\n${tracks}` +
+			`Total tracks: ${this.queue.length}\n\n` +
+			`++ Current track:\n${this.currentTrack.name} (${this.currentTrack.type})\n\n` +
+			`--Upcoming tracks:\n${tracks}` +
 			"```";
 
 		this.textChannel.send(queue);
