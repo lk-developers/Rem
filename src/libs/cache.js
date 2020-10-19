@@ -32,8 +32,8 @@ const saveAnime = (keyword, tracks) => {
 	animeDb.get("tracks").push({ key: keyword, tracks: tracks }).write();
 };
 
-const saveYoutube = (keyword, track) => {
-	youtubeDb.get("tracks").push({ key: keyword, track: track }).write();
+const saveYoutube = (keyword, tracks) => {
+	youtubeDb.get("tracks").push({ key: keyword, tracks: tracks }).write();
 };
 
 const getAnime = (keyword) => {

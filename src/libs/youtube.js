@@ -2,14 +2,15 @@ const fetch = require("node-fetch");
 const cheerio = require("cheerio");
 const ytdl = require("ytdl-core-discord");
 const ytsr = require("ytsr");
+const ytpl = require("ytpl");
 const cache = require("./cache");
 
-const getTrack = async (keywordOrUrl) => {
+const getTracks = async (keywordOrUrl) => {
 	// check cache first
-	const cachedTrack = cache.getYoutube(keywordOrUrl);
+	const cachedTracks = cache.getYoutube(keywordOrUrl);
 
-	if (cachedTrack) {
-		return cachedTrack.track;
+	if (cachedTracks) {
+		return cachedTracks.tracks;
 	}
 
 	let youtubeLink;
@@ -39,7 +40,29 @@ const getTrack = async (keywordOrUrl) => {
 		youtubeLink = keywordOrUrl;
 	}
 
-	// get track info using ytdl
+	// check if this is a playlist
+	if (youtubeLink.indexOf("list=") > -1) {
+		const listId = youtubeLink.split("list=")[1];
+
+		const playlist = await ytpl(listId).catch(() => {
+			throw "Sorry!. I couldn't load that playlist!.";
+		});
+
+		const tracks = playlist.items.map((t) => {
+			return {
+				name: t.title,
+				type: "Youtube",
+				url: t.url,
+			};
+		});
+
+		// save to cache
+		cache.saveYoutube(keywordOrUrl, tracks);
+
+		return tracks;
+	}
+
+	// for a single track
 	const trackInfo = await ytdl.getInfo(youtubeLink).catch(() => {
 		throw "Sorry!. I couldn't find info for that track!.";
 	});
@@ -50,10 +73,9 @@ const getTrack = async (keywordOrUrl) => {
 		url: youtubeLink,
 	};
 
-	// save to cache
-	cache.saveYoutube(keywordOrUrl, track);
+	cache.saveYoutube(keywordOrUrl, [track]);
 
-	return track;
+	return [track];
 };
 
 // fallback for youtube search queries fails
@@ -81,4 +103,4 @@ const searchInvidio = async (keyword) => {
 	return `https://www.youtube.com/${link}`;
 };
 
-module.exports = { getTrack };
+module.exports = { getTracks };

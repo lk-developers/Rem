@@ -16,6 +16,7 @@
     "lowdb": "^1.0.0",
     "node-fetch": "^2.6.1",
     "ytdl-core-discord": "^1.2.3",
+    "ytpl": "^1.0.1",
     "ytsr": "^1.0.4"
   },
   "devDependencies": {

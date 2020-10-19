@@ -24,10 +24,10 @@ class Player extends EventEmitter {
 		}
 
 		youtube
-			.getTrack(keywordOrUrl)
+			.getTracks(keywordOrUrl)
 			.then((track) => {
 				// push to global tracks
-				this.addTracksToQueue([track]);
+				this.addTracksToQueue(track);
 				// start playing first track if state is null
 				if (!this.state) this.playTrack();
 			})

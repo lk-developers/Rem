@@ -150,11 +150,11 @@ const sendHelp = (channel) => {
 		},
 		fields: [
 			{
-				name: `${prefix}play <track name> or <youtube url>`,
+				name: `${prefix}play <song name> or <youtube url> or <youtube playlist url>`,
 				value: "Start playing a track from youtube.",
 			},
 			{
-				name: `${prefix}anime <anime_name>`,
+				name: `${prefix}anime <anime name>`,
 				value: "Start playing OPs & EDs from themes.moe.",
 			},
 			{
