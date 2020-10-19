@@ -163,7 +163,7 @@ client.on("message", async (message) => {
 	}
 
 	if (message.content.trim() == `${prefix}queue`) {
-		guildPlayer.showQueue();
+		guildPlayer.showQueue(message.channel);
 		message.react("👍");
 	}
 
@@ -173,7 +173,7 @@ client.on("message", async (message) => {
 	}
 
 	if (message.content.trim() == `${prefix}np`) {
-		guildPlayer.showCurrentTrack();
+		guildPlayer.showCurrentTrack(message.channel);
 		message.react("👍");
 	}
 });

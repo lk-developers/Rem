@@ -141,7 +141,7 @@ class Player extends EventEmitter {
 		}
 	}
 
-	showQueue() {
+	showQueue(textChannel) {
 		let tracks = "";
 		this.queue.every((track, index) => {
 			if (index == 10) return false;
@@ -156,10 +156,10 @@ class Player extends EventEmitter {
 			`--Upcoming tracks:\n${tracks}` +
 			"```";
 
-		this.textChannel.send(queue);
+		textChannel.send(queue);
 	}
 
-	showCurrentTrack() {
+	showCurrentTrack(textChannel) {
 		if (!this.currentTrack) {
 			this.sendEmbed("Nothing is playing right now.");
 			return;
@@ -181,7 +181,7 @@ class Player extends EventEmitter {
 			],
 		};
 
-		this.textChannel.send({ embed: trackEmbed });
+		textChannel.send({ embed: trackEmbed });
 	}
 
 	registerDispatcherEventListeners() {
