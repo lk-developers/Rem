@@ -1,5 +1,7 @@
 const Discord = require("discord.js");
 const { Player } = require("./player");
+const playlists = require("./playlists");
+
 const config = require("../config/config.json");
 const client = new Discord.Client();
 
@@ -37,10 +39,6 @@ client.on("message", async (message) => {
 			message.content.split(`${prefix}play`)[1].trim() || false;
 
 		if (guildPlayer) {
-			// if bot is in a different voice channel, join that channel first
-			if (guildPlayer.voiceConnection.channel.id !== voiceChannel.id) {
-				await voiceChannel.join();
-			}
 			guildPlayer.playYoutubeTracks(keywordOrUrl);
 			message.react("👍");
 			return;
@@ -86,6 +84,46 @@ client.on("message", async (message) => {
 		return;
 	}
 
+	if (message.content.trim() == `${prefix}plplay`) {
+		if (guildPlayer) {
+			playlists.startPlaylist(message.member.id, guildPlayer);
+			message.react("👍");
+			return;
+		}
+
+		const voiceConnection = await voiceChannel.join();
+
+		const player = new Player(message.channel, voiceConnection);
+
+		registerGuildPlayerEventListeners(message, player);
+		// add player to global players
+		guildPlayers.set(message.guild.id, player);
+
+		playlists.startPlaylist(message.member.id, player);
+		message.react("👍");
+		return;
+	}
+
+	if (message.content.trim() == `${prefix}plshow`) {
+		playlists.showPlaylist(message.member, message.channel);
+		message.react("👍");
+		return;
+	}
+
+	if (message.content.trim().startsWith(`${prefix}pldel`)) {
+		let position = message.content.trim().split(`${prefix}pldel`)[1] || null;
+		position = isNaN(position) ? null : parseInt(position);
+
+		if (!position) {
+			message.reply("Please provide a track position!.");
+			message.react("😡");
+			return;
+		}
+		playlists.removeFromPlaylist(message.member.id, position, message.channel);
+		message.react("👍");
+		return;
+	}
+
 	if (!guildPlayer) {
 		message.reply("Nothing is playing at the moment!.");
 		message.react("😡");
@@ -121,6 +159,11 @@ client.on("message", async (message) => {
 		guildPlayer.showQueue();
 		message.react("👍");
 	}
+
+	if (message.content.trim() == `${prefix}pladd`) {
+		playlists.saveToPlaylist(message.member.id, guildPlayer);
+		message.react("👍");
+	}
 });
 
 const registerGuildPlayerEventListeners = (message, player) => {
@@ -150,32 +193,82 @@ const sendHelp = (channel) => {
 		},
 		fields: [
 			{
+				name: "Main commands",
+				value: "----------------------------------------",
+			},
+			{
 				name: `${prefix}play <song name> or <youtube url> or <youtube playlist url>`,
 				value: "Start playing a track from youtube.",
 			},
 			{
 				name: `${prefix}anime <anime name>`,
-				value: "Start playing OPs & EDs from themes.moe.",
+				value: "Start playing OPs & EDs from themes.moe.\n\u200B",
 			},
 			{
-				name: `${prefix}queue`,
-				value: "Show queue.",
-			},
-			{
-				name: `${prefix}skip`,
-				value: "Skip to next track.",
-			},
-			{
-				name: `${prefix}skip <number>`,
-				value: "Jump to a track in the queue.",
+				name: "Basic controls",
+				value: "----------------------------------------",
 			},
 			{
 				name: `${prefix}pause`,
 				value: "Pause player.",
+				inline: true,
+			},
+			{
+				name: `${prefix}play`,
+				value: "Resume player.",
+				inline: true,
 			},
 			{
 				name: `${prefix}stop`,
 				value: "Stop player and clear the queue.",
+				inline: true,
+			},
+			{
+				name: "Queue commands",
+				value: "----------------------------------------",
+			},
+			{
+				name: `${prefix}queue`,
+				value: "Show queue.",
+				inline: true,
+			},
+			{
+				name: `${prefix}skip`,
+				value: "Skip to next track.",
+				inline: true,
+			},
+			{
+				name: `${prefix}skip <number>`,
+				value: "Jump to a track in the queue.",
+				inline: true,
+			},
+			{
+				name: "Playlist commands",
+				value: "----------------------------------------",
+			},
+			{
+				name: `${prefix}plplay`,
+				value: "Start your playlist (add to queue).",
+				inline: true,
+			},
+			{
+				name: `${prefix}pladd`,
+				value: "Add current track to your playlist.",
+				inline: true,
+			},
+			{
+				name: `${prefix}plshow`,
+				value: "Show your playlist.",
+				inline: true,
+			},
+			{
+				name: `${prefix}pldel <number>`,
+				value: "Remove track from your playlist.\n\u200B",
+				inline: true,
+			},
+			{
+				name: "Other commands",
+				value: "----------------------------------------",
 			},
 			{
 				name: `${prefix}help`,

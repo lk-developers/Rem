@@ -118,3 +118,6 @@ dist
 # cache
 cache/*
 !cache/.gitkeep
+
+playlists/*
+!playlists/.gitkeep
