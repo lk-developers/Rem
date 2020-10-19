@@ -150,7 +150,7 @@ const sendHelp = (channel) => {
 		},
 		fields: [
 			{
-				name: `${prefix}play <track name>`,
+				name: `${prefix}play <track name> or <youtube url>`,
 				value: "Start playing a track from youtube.",
 			},
 			{
@@ -178,7 +178,7 @@ const sendHelp = (channel) => {
 				value: "Stop player and clear the queue.",
 			},
 			{
-				name: `$${prefix}help`,
+				name: `${prefix}help`,
 				value: "Show help.",
 			},
 		],
