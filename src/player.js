@@ -17,7 +17,7 @@ class Player extends EventEmitter {
 	}
 
 	// play a single track from youtube
-	playYoutubeTrack(keywordOrUrl) {
+	playYoutubeTracks(keywordOrUrl) {
 		if (this.state == "paused") {
 			this.resume();
 			return;

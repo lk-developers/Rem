@@ -41,7 +41,7 @@ client.on("message", async (message) => {
 			if (guildPlayer.voiceConnection.channel.id !== voiceChannel.id) {
 				await voiceChannel.join();
 			}
-			guildPlayer.playYoutubeTrack(keywordOrUrl);
+			guildPlayer.playYoutubeTracks(keywordOrUrl);
 			message.react("👍");
 			return;
 		}
@@ -49,7 +49,7 @@ client.on("message", async (message) => {
 		const voiceConnection = await voiceChannel.join();
 
 		const player = new Player(message.channel, voiceConnection);
-		player.playYoutubeTrack(keywordOrUrl);
+		player.playYoutubeTracks(keywordOrUrl);
 
 		registerGuildPlayerEventListeners(message, player);
 
