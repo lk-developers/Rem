@@ -38,7 +38,7 @@ class Player extends EventEmitter {
 			})
 			.catch((e) => {
 				this.emit("error", e);
-				this.sendGeneralEmbed(e);
+				this.sendGeneralEmbed("I couldn't find that track on Youtube!.");
 			});
 	}
 
@@ -52,7 +52,7 @@ class Player extends EventEmitter {
 			})
 			.catch((e) => {
 				this.emit("error", e);
-				this.sendGeneralEmbed(e, "Error");
+				this.sendGeneralEmbed("I couldn't find themes for that anime!.");
 			});
 	}
 
