@@ -33,14 +33,15 @@ client.on("message", async (message) => {
 	}
 
 	if (message.content.startsWith(`${prefix}play`)) {
-		const keyword = message.content.split(`${prefix}play`)[1].trim() || false;
+		const keywordOrUrl =
+			message.content.split(`${prefix}play`)[1].trim() || false;
 
 		if (guildPlayer) {
 			// if bot is in a different voice channel, join that channel first
 			if (guildPlayer.voiceConnection.channel.id !== voiceChannel.id) {
 				await voiceChannel.join();
 			}
-			guildPlayer.playYoutubeTrack(keyword);
+			guildPlayer.playYoutubeTrack(keywordOrUrl);
 			message.react("👍");
 			return;
 		}
@@ -48,7 +49,7 @@ client.on("message", async (message) => {
 		const voiceConnection = await voiceChannel.join();
 
 		const player = new Player(message.channel, voiceConnection);
-		player.playYoutubeTrack(keyword);
+		player.playYoutubeTrack(keywordOrUrl);
 
 		registerGuildPlayerEventListeners(message, player);
 

@@ -16,18 +16,18 @@ class Player extends EventEmitter {
 	}
 
 	// play a single track from youtube
-	playYoutubeTrack(keyword = null) {
+	playYoutubeTrack(keywordOrUrl) {
 		if (this.state == "paused") {
 			this.resume();
 			return;
 		}
 
 		youtube
-			.getTrack(keyword)
+			.getTrack(keywordOrUrl)
 			.then((track) => {
 				// push to global tracks
 				this.queue.push(track);
-				this.sendEmbed("track added to the queue.");
+				this.sendEmbed(`${track.name} added to the queue.`);
 
 				// start playing first track if state is null
 				if (!this.state) this.playTrack();
@@ -39,7 +39,7 @@ class Player extends EventEmitter {
 	}
 
 	// play OPs & EDs from themes.moe
-	playAnimeTracks(animeName = null) {
+	playAnimeTracks(animeName) {
 		themesMoe
 			.getTracks(animeName)
 			.then((tracks) => {
