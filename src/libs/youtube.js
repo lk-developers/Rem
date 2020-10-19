@@ -1,3 +1,5 @@
+const fetch = require("node-fetch");
+const cheerio = require("cheerio");
 const ytdl = require("ytdl-core-discord");
 const ytsr = require("ytsr");
 const cache = require("./cache");
@@ -10,7 +12,7 @@ const getTrack = async (keywordOrUrl) => {
 		return cachedTrack.track;
 	}
 
-	let searchResult;
+	let youtubeLink;
 
 	// check if this is a youtube url or not
 	const youtubeUrlRegex = new RegExp(
@@ -19,26 +21,28 @@ const getTrack = async (keywordOrUrl) => {
 
 	if (!youtubeUrlRegex.test(keywordOrUrl)) {
 		// find track from youtube
-		const searchResults = await ytsr(keywordOrUrl, {
-			limit: 1,
-			safeSearch: false,
-		}).catch(() => {
-			throw "Sorry!. Youtube is blocking my requests :(.";
-		});
+		try {
+			const searchResults = await ytsr(keywordOrUrl, {
+				limit: 1,
+				safeSearch: false,
+			});
 
-		if (!searchResults.items && searchResults.items.length !== 1) {
-			throw "Sorry!. I couldn't find a track for that keyword!.";
+			youtubeLink = searchResults.items[0].link;
+		} catch (e) {
+			youtubeLink = await searchInvidio(keywordOrUrl);
 		}
 
-		searchResult = searchResults.items[0].link;
+		if (!youtubeLink) {
+			throw "Sorry!. I couldn't find a track for that keyword!.";
+		}
+	} else {
+		youtubeLink = keywordOrUrl;
 	}
 
 	// get track info using ytdl
-	const trackInfo = await ytdl
-		.getInfo(searchResult || keywordOrUrl)
-		.catch(() => {
-			throw "Sorry!. I couldn't find info for that track!.";
-		});
+	const trackInfo = await ytdl.getInfo(youtubeLink).catch(() => {
+		throw "Sorry!. I couldn't find info for that track!.";
+	});
 
 	// find a format with good audio quality
 	const format = trackInfo.formats.find(
@@ -59,6 +63,29 @@ const getTrack = async (keywordOrUrl) => {
 	cache.saveYoutube(keywordOrUrl, track);
 
 	return track;
+};
+
+// fallback for youtube search queries fails
+const searchInvidio = async (keyword) => {
+	// parse and find the first result
+	const retries = 4;
+	let currentTry = 0;
+
+	let link = null;
+
+	while (link == null && currentTry < retries) {
+		// html response
+		const response = await (
+			await fetch(`https://tube.connect.cafe/search?q=${keyword}`)
+		).text();
+
+		const $ = cheerio.load(response);
+		const a = $(".pure-u-1.pure-u-md-1-4 .h-box a").first();
+		if (a) link = a.attr("href");
+		currentTry++;
+	}
+
+	return `https://www.youtube.com/${link}`;
 };
 
 module.exports = { getTrack };
