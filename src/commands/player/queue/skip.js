@@ -1,5 +1,5 @@
-const guildPlayers = require("../../store/guildPlayers");
-const config = require("../../../config/config.json");
+const guildPlayers = require(`${process.cwd()}/src/store/guildPlayers`);
+const config = require(`${process.cwd()}/config/config.json`);
 
 const handle = async (message) => {
 	// check if member is in a voice channel

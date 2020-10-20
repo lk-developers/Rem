@@ -103,14 +103,14 @@ const getHelpEmbed = (prefix) => {
 				value: "Export your playlist.\n\u200B",
 				inline: true,
 			},
-			{
-				name: "Other commands",
-				value: "----------------------------------------",
-			},
-			{
-				name: `${prefix}help`,
-				value: "Show help.",
-			},
+			// {
+			// 	name: "Other commands",
+			// 	value: "----------------------------------------",
+			// },
+			// {
+			// 	name: `${prefix}help`,
+			// 	value: "Show help.",
+			// },
 		],
 		footer: {
 			text: "By LK Developers",
