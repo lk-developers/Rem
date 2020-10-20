@@ -30,7 +30,7 @@ client.on("message", async (message) => {
 		const module = require(COMMANDS[command]);
 		module.handle(message);
 	} catch (e) {
-		console.log(e);
+		if (e.code !== "ERR_INVALID_ARG_TYPE") console.log(e);
 		message.reply("Invalid command!");
 	}
 });
