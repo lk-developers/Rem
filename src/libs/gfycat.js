@@ -21,10 +21,6 @@ const getRandomGif = async (keyword) => {
 	return randomGifUrl;
 };
 
-getRandomGif("re zero rem").then((url) => {
-	console.log(url);
-});
-
 module.exports = {
 	getRandomGif,
 };
