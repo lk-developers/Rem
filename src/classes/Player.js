@@ -123,6 +123,7 @@ class Player extends EventEmitter {
 
 	pause() {
 		if (this.dispatcher) {
+			this.dispatcher.pause();
 			this.state = "paused";
 			this.emit("queuePaused");
 		}
@@ -130,8 +131,8 @@ class Player extends EventEmitter {
 
 	resume() {
 		if (this.dispatcher) {
-			this.state = "playing";
 			this.dispatcher.resume();
+			this.state = "playing";
 			this.emit("queueResumed");
 		}
 	}
