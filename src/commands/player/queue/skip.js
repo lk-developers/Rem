@@ -24,6 +24,13 @@ const handle = async (message) => {
 		message.content.trim().split(`${config.PREFIX}skip`)[1] || null;
 	position = isNaN(position) ? null : parseInt(position);
 
+	// check if position is invalid
+	if (position && !player.queue[position - 1]) {
+		message.reply("Invalid position!. Please check the queue again.");
+		message.react("😡");
+		return;
+	}
+
 	// skip tracks
 	player.skip(position);
 

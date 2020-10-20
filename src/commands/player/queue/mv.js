@@ -35,6 +35,15 @@ const handle = async (message) => {
 		return;
 	}
 
+	// check of given positions exists
+	if (!player.queue[currentPosition - 1] || !player.queue[newPosition - 1]) {
+		message.reply(
+			"Positions you gave me are invalid!. Please check the queue again."
+		);
+		message.react("😡");
+		return;
+	}
+
 	// move tracks
 	player.queue = moveIndex(player.queue, currentPosition - 1, newPosition - 1);
 
