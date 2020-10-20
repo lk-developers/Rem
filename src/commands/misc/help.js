@@ -1,3 +1,10 @@
+const config = require("../../../config/config.json");
+
+const handle = (message) => {
+	const embed = getHelpEmbed(config.PREFIX);
+	message.reply({ embed: embed });
+};
+
 const getHelpEmbed = (prefix) => {
 	return {
 		description: "Send ♥ to themes.moe and jikan.moe for their amazing work!.",
@@ -16,7 +23,7 @@ const getHelpEmbed = (prefix) => {
 				value: "Start playing a track from youtube.",
 			},
 			{
-				name: `${prefix}anime <anime name>`,
+				name: `${prefix}playani <anime name>`,
 				value: "Start playing OPs & EDs from themes.moe.\n\u200B",
 			},
 			{
@@ -112,4 +119,6 @@ const getHelpEmbed = (prefix) => {
 	};
 };
 
-module.exports = { getHelpEmbed };
+module.exports = {
+	handle,
+};

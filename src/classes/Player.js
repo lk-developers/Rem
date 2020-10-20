@@ -1,6 +1,6 @@
 const EventEmitter = require("events");
-const themesMoe = require("./libs/themes.moe");
-const youtube = require("./libs/youtube");
+const themesMoe = require("../libs/themes.moe");
+const youtube = require("../libs/youtube");
 const ytdl = require("ytdl-core-discord");
 
 class Player extends EventEmitter {
@@ -20,6 +20,7 @@ class Player extends EventEmitter {
 	playYoutubeTracks(keywordOrUrl) {
 		if (this.state == "paused") {
 			this.resume();
+			this.sendGeneralEmbed("Queue resumed!.");
 			return;
 		}
 
@@ -134,7 +135,6 @@ class Player extends EventEmitter {
 		if (this.dispatcher) {
 			this.state = "paused";
 			this.dispatcher.pause();
-			this.sendGeneralEmbed("Queue Paused!");
 		}
 	}
 
@@ -142,7 +142,6 @@ class Player extends EventEmitter {
 		if (this.dispatcher) {
 			this.state = "playing";
 			this.dispatcher.resume();
-			this.sendGeneralEmbed("Queue Resumed!");
 		}
 	}
 
@@ -152,35 +151,7 @@ class Player extends EventEmitter {
 			this.queue = [];
 			this.state = null;
 			this.currentTrack = null;
-			this.emit("queueStopped");
 		}
-	}
-
-	showQueue(textChannel) {
-		let tracks = "";
-		this.queue.every((track, index) => {
-			if (index == 10) return false;
-			tracks += `(${index + 1}) ${track.name} (${track.type})\n`;
-			return true;
-		});
-
-		const queue =
-			"```diff\n" +
-			`Total tracks: ${this.queue.length}\n\n` +
-			`++ Current track:\n${this.currentTrack.name} (${this.currentTrack.type})\n\n` +
-			`--Upcoming tracks:\n${tracks}` +
-			"```";
-
-		textChannel.send(queue);
-	}
-
-	showCurrentTrack(textChannel) {
-		if (!this.currentTrack) {
-			this.sendGeneralEmbed("Nothing is playing right now.");
-			return;
-		}
-
-		this.sendNowPlayingEmbed(textChannel);
 	}
 
 	sendNowPlayingEmbed(textChannel = this.textChannel) {
