@@ -71,6 +71,10 @@ const create = (guildId, textChannel, voiceConnection) => {
 		sendGeneralEmbed("Queue finished.");
 	});
 
+	player.on("error", (e) => {
+		console.log(`Error happened: ${e}`);
+	});
+
 	// embed for general responses
 	const sendGeneralEmbed = (text) => {
 		const embed = {
