@@ -1,11 +1,11 @@
-const { writeFileSync, existsSync } = require("fs");
+const { existsSync } = require("fs");
 const low = require("lowdb");
 const FileSync = require("lowdb/adapters/FileSync");
 
-const guildPlayers = require("../../store/guildPlayers");
-const config = require("../../../config/config.json");
+const guildPlayers = require(`${process.cwd()}/src/store/guildPlayers`);
+const config = require(`${process.cwd()}/config/config.json`);
 
-const playlistDir = `${__dirname}/../../../playlists`;
+const playlistDir = `${process.cwd()}/playlists`;
 
 const handle = async (message) => {
 	// check command

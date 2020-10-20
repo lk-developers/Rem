@@ -2,9 +2,9 @@ const { existsSync } = require("fs");
 const low = require("lowdb");
 const FileSync = require("lowdb/adapters/FileSync");
 
-const config = require("../../../config/config.json");
+const config = require(`${process.cwd()}/config/config.json`);
 
-const playlistDir = `${__dirname}/../../../playlists`;
+const playlistDir = `${process.cwd()}/playlists`;
 
 const handle = async (message) => {
 	// check command

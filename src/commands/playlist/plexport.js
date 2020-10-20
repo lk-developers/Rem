@@ -1,9 +1,9 @@
 const { MessageAttachment } = require("discord.js");
 const { existsSync } = require("fs");
 
-const config = require("../../../config/config.json");
+const config = require(`${process.cwd()}/config/config.json`);
 
-const playlistDir = `${__dirname}/../../../playlists`;
+const playlistDir = `${process.cwd()}/playlists`;
 
 const handle = async (message) => {
 	// check command
