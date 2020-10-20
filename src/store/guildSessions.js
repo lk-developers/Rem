@@ -29,6 +29,10 @@ const create = (guildId, textChannel, voiceConnection) => {
 		sendGeneralEmbed("There are no more tracks left!.");
 	});
 
+	player.on("trackRemoved", () => {
+		sendGeneralEmbed("Track removed from the queue!.");
+	});
+
 	player.on("queuePaused", () => {
 		sendGeneralEmbed("Queue paused!.");
 	});

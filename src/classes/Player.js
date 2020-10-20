@@ -158,6 +158,11 @@ class Player extends EventEmitter {
 		}
 		this.emit("queueStopped");
 	}
+
+	remove(position) {
+		this.queue = this.queue.filter((t, index) => index !== position - 1);
+		this.emit("trackRemoved");
+	}
 }
 
 module.exports = {

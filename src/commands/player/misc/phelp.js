@@ -79,13 +79,18 @@ const getHelpEmbed = (prefix) => {
 				inline: true,
 			},
 			{
-				name: `${prefix}mv <track number>,<new position>`,
-				value: "Move track to a new position.",
+				name: `${prefix}rm <number>`,
+				value: "Remove track from the queue.",
+				inline: true,
 			},
 			{
 				name: `${prefix}loop`,
 				value: "Toggle queue looping.\n\u200B",
 				inline: true,
+			},
+			{
+				name: `${prefix}mv <track number>,<new position>`,
+				value: "Move track to a new position.\n\u200B",
 			},
 			{
 				name: "Playlist commands",
