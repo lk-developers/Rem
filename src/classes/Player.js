@@ -13,6 +13,7 @@ class Player extends EventEmitter {
 		this.currentTrack = null;
 		// state is null when queue is empty. (can be null, playing, paused)
 		this.state = null;
+		this.loopQueue = false;
 	}
 
 	// play a single track from youtube
@@ -74,14 +75,25 @@ class Player extends EventEmitter {
 			this.queue = this.queue.filter((t, index) => index !== position - 1);
 		}
 
+		// push track back to the end when loop queue is enabled
+		if (this.loopQueue) this.queue.push(track);
+
 		this.currentTrack = track;
+
+		// remove existing dispatcher if there is one
 		if (this.dispatcher) this.dispatcher.destroy();
+
 		if (track.type == "Youtube") {
-			this.dispatcher = this.voiceConnection.play(await ytdl(track.url), {
-				type: "opus",
-				bitrate: 320,
-				volume: false,
-			});
+			// on a ytdl error, jump to the next track
+			try {
+				this.dispatcher = this.voiceConnection.play(await ytdl(track.url), {
+					type: "opus",
+					bitrate: 320,
+					volume: false,
+				});
+			} catch (e) {
+				this.playTrack();
+			}
 		} else {
 			this.dispatcher = this.voiceConnection.play(track.url, {
 				bitrate: 320,

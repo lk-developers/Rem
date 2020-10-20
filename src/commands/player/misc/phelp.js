@@ -80,7 +80,11 @@ const getHelpEmbed = (prefix) => {
 			},
 			{
 				name: `${prefix}mv <track number>,<new position>`,
-				value: "Move track to a new position. \n\u200B",
+				value: "Move track to a new position.",
+			},
+			{
+				name: `${prefix}loop`,
+				value: "Toggle queue looping.\n\u200B",
 				inline: true,
 			},
 			{
