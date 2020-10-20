@@ -1,4 +1,4 @@
-const guildPlayers = require(`${process.cwd()}/src/store/guildPlayers`);
+const guildSessions = require(`${process.cwd()}/src/store/guildSessions`);
 const config = require(`${process.cwd()}/config/config.json`);
 
 const handle = async (message) => {
@@ -14,7 +14,7 @@ const handle = async (message) => {
 	}
 
 	// check if guild has a running player
-	const player = guildPlayers.get(message.guild.id);
+	const player = guildSessions.get(message.guild.id);
 
 	if (!player) {
 		message.reply("There is nothing playing atm!.");

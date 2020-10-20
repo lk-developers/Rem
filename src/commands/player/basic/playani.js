@@ -1,4 +1,4 @@
-const guildPlayers = require(`${process.cwd()}/src/store/guildPlayers`);
+const guildSessions = require(`${process.cwd()}/src/store/guildSessions`);
 const config = require(`${process.cwd()}/config/config.json`);
 
 const handle = async (message) => {
@@ -20,7 +20,7 @@ const handle = async (message) => {
 	}
 
 	// if guild already has a running player, use it
-	const player = guildPlayers.get(message.guild.id);
+	const player = guildSessions.get(message.guild.id);
 
 	if (player) {
 		player.playAnimeTracks(animeName);
@@ -31,25 +31,11 @@ const handle = async (message) => {
 	// else, create a new player instance for the guild
 	const voiceConnection = await voiceChannel.join();
 
-	const newPlayer = guildPlayers.assign(
+	const newPlayer = guildSessions.create(
 		message.guild.id,
 		message.channel,
 		voiceConnection
 	);
-
-	newPlayer.on("queueFinished", () => {
-		console.log(`Queue finished @ ${message.guild.name}`);
-		guildPlayers.remove(message.guild.id);
-	});
-
-	newPlayer.on("queueStopped", () => {
-		console.log(`Queue stopped @ ${message.guild.name}`);
-		guildPlayers.remove(message.guild.id);
-	});
-
-	newPlayer.on("error", (e) => {
-		console.log("Error happend: ", e);
-	});
 
 	newPlayer.playAnimeTracks(animeName);
 

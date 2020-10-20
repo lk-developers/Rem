@@ -1,4 +1,4 @@
-const guildPlayers = require(`${process.cwd()}/src/store/guildPlayers`);
+const guildSessions = require(`${process.cwd()}/src/store/guildSessions`);
 const config = require(`${process.cwd()}/config/config.json`);
 
 const handle = async (message) => {
@@ -15,7 +15,14 @@ const handle = async (message) => {
 		message.content.trim().split(`${config.PREFIX}play`)[1].trim() || false;
 
 	// if guild already has a running player, use it
-	const player = guildPlayers.get(message.guild.id);
+	const player = guildSessions.get(message.guild.id);
+
+	// check if player is paused if this is a resume command and keywordOrUrl is false
+	if (!keywordOrUrl && player.state !== "paused") {
+		message.reply("Please provide a valid track name or a url!.");
+		message.react("😡");
+		return;
+	}
 
 	if (player) {
 		player.playYoutubeTracks(keywordOrUrl);
@@ -26,25 +33,11 @@ const handle = async (message) => {
 	// else, create a new player instance for the guild
 	const voiceConnection = await voiceChannel.join();
 
-	const newPlayer = guildPlayers.assign(
+	const newPlayer = guildSessions.create(
 		message.guild.id,
 		message.channel,
 		voiceConnection
 	);
-
-	newPlayer.on("queueFinished", () => {
-		console.log(`Queue finished @ ${message.guild.name}`);
-		guildPlayers.remove(message.guild.id);
-	});
-
-	newPlayer.on("queueStopped", () => {
-		console.log(`Queue stopped @ ${message.guild.name}`);
-		guildPlayers.remove(message.guild.id);
-	});
-
-	newPlayer.on("error", (e) => {
-		console.log("Error happend: ", e);
-	});
 
 	newPlayer.playYoutubeTracks(keywordOrUrl);
 
