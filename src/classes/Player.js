@@ -4,11 +4,10 @@ const youtube = require("../libs/youtube");
 const ytdl = require("ytdl-core-discord");
 
 class Player extends EventEmitter {
-	constructor(textChannel, voiceConnection) {
+	constructor(voiceConnection, textChannel) {
 		super();
-		// text channel is for commands and responses
-		this.textChannel = textChannel;
 		this.voiceConnection = voiceConnection;
+		this.textChannel = textChannel;
 		this.dispatcher = null;
 		this.queue = [];
 		this.currentTrack = null;
@@ -20,12 +19,6 @@ class Player extends EventEmitter {
 	playYoutubeTracks(keywordOrUrl) {
 		if (this.state == "paused") {
 			this.resume();
-			this.sendGeneralEmbed("Queue resumed!.");
-			return;
-		}
-
-		if (!keywordOrUrl) {
-			this.sendGeneralEmbed("Please enter a valid track name!.");
 			return;
 		}
 
@@ -38,8 +31,8 @@ class Player extends EventEmitter {
 				if (!this.state) this.playTrack();
 			})
 			.catch((e) => {
+				this.emit("youtubeFailed");
 				this.emit("error", e);
-				this.sendGeneralEmbed("I couldn't find that track on Youtube!.");
 			});
 	}
 
@@ -52,8 +45,8 @@ class Player extends EventEmitter {
 				if (!this.state) this.playTrack();
 			})
 			.catch((e) => {
+				this.emit("themesFailed");
 				this.emit("error", e);
-				this.sendGeneralEmbed("I couldn't find themes for that anime!.");
 			});
 	}
 
@@ -61,14 +54,12 @@ class Player extends EventEmitter {
 		if (this.queue.length <= 100) {
 			this.queue = [...this.queue, ...tracks];
 			if (tracks.length == 1) {
-				this.sendGeneralEmbed(`${tracks[0].name} added to the queue.`);
+				this.emit("trackAdded", tracks[0]);
 			} else {
-				this.sendGeneralEmbed(`${tracks.length} tracks added to the queue.`);
+				this.emit("tracksAdded", tracks.length);
 			}
 		} else {
-			this.sendGeneralEmbed(
-				"Queue is full!. Skip or Stop the current session first."
-			);
+			this.emit("queueFull");
 		}
 	}
 
@@ -100,16 +91,15 @@ class Player extends EventEmitter {
 
 		this.state = "playing";
 
-		this.sendNowPlayingEmbed();
+		this.emit("nowPlaying", this.currentTrack);
 
 		// register event listener for the dispatcher
 		this.dispatcher.on("finish", () => {
 			if (this.queue.length > 0) {
 				this.playTrack();
 			} else {
-				this.sendGeneralEmbed("Queue finished!");
-				this.voiceConnection.disconnect();
 				this.emit("queueFinished");
+				this.voiceConnection.disconnect();
 			}
 		});
 
@@ -122,11 +112,11 @@ class Player extends EventEmitter {
 				if (position) {
 					this.playTrack(position);
 				} else {
-					this.sendGeneralEmbed("Track Skipped!.");
+					this.emit("trackSkipped");
 					this.playTrack();
 				}
 			} else {
-				this.sendGeneralEmbed("There are no more tracks left!.");
+				this.emit("trackSkipEmpty");
 			}
 		}
 	}
@@ -134,7 +124,7 @@ class Player extends EventEmitter {
 	pause() {
 		if (this.dispatcher) {
 			this.state = "paused";
-			this.dispatcher.pause();
+			this.emit("queuePaused");
 		}
 	}
 
@@ -142,6 +132,7 @@ class Player extends EventEmitter {
 		if (this.dispatcher) {
 			this.state = "playing";
 			this.dispatcher.resume();
+			this.emit("queueResumed");
 		}
 	}
 
@@ -152,41 +143,7 @@ class Player extends EventEmitter {
 			this.state = null;
 			this.currentTrack = null;
 		}
-	}
-
-	sendNowPlayingEmbed(textChannel = this.textChannel) {
-		const trackEmbed = {
-			color: "#7ca8d9",
-			author: {
-				name: "| Now playing",
-				icon_url: "https://tinyurl.com/y4x8xlat",
-			},
-			thumbnail: {
-				url: "https://i.imgur.com/77Q5D0s.gif",
-			},
-			fields: [
-				{
-					name: `${this.currentTrack.name} (${this.currentTrack.type})`,
-					value: `Source: [Click Here](${this.currentTrack.url})`,
-				},
-			],
-		};
-
-		textChannel.send({ embed: trackEmbed });
-	}
-
-	sendGeneralEmbed(name, title = null) {
-		const embed = {
-			color: "#7ca8d9",
-			author: {
-				name: `| ${name}`,
-				icon_url: "https://tinyurl.com/y4x8xlat",
-			},
-		};
-
-		if (title) embed["title"] = title;
-
-		this.textChannel.send({ embed: embed });
+		this.emit("queueStopped");
 	}
 }
 
