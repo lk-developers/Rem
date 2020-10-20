@@ -22,24 +22,29 @@ const handle = async (message) => {
 		return;
 	}
 
-	// create a discord block for the playlist
-	let tracks = "";
-	player.queue.every((track, index) => {
-		if (index == 10) return false;
-		tracks += `(${index + 1}) ${track.name} (${track.type})\n`;
-		return true;
-	});
+	try {
+		// create a discord block for the playlist
+		let tracks = "";
+		player.queue.every((track, index) => {
+			if (index == 10) return false;
+			tracks += `(${index + 1}) ${track.name} (${track.type})\n`;
+			return true;
+		});
 
-	const queue =
-		"```diff\n" +
-		`Total tracks: ${player.queue.length}\n\n` +
-		`++ Current track:\n${player.currentTrack.name} (${player.currentTrack.type})\n\n` +
-		`--Upcoming tracks:\n${tracks}` +
-		"```";
+		const queue =
+			"```diff\n" +
+			`Total tracks: ${player.queue.length}\n\n` +
+			`++ Current track:\n${player.currentTrack.name} (${player.currentTrack.type})\n\n` +
+			`--Upcoming tracks:\n${tracks}` +
+			"```";
 
-	message.channel.send(queue);
+		message.channel.send(queue);
 
-	message.react("👍");
+		message.react("👍");
+	} catch (e) {
+		message.reply("Sorry!. I can't show you the queue right now.");
+		message.react("😢");
+	}
 };
 
 module.exports = {
