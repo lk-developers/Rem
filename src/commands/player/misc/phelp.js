@@ -79,6 +79,11 @@ const getHelpEmbed = (prefix) => {
 				inline: true,
 			},
 			{
+				name: `${prefix}mv <track number>,<new position>`,
+				value: "Move track to a new position. \n\u200B",
+				inline: true,
+			},
+			{
 				name: "Playlist commands",
 				value: "----------------------------------------",
 			},
