@@ -16,6 +16,7 @@ const handle = async (message) => {
 
 	// create an embed for the current track
 	const trackEmbed = {
+		color: "#7ca8d9",
 		author: {
 			name: "| Now playing",
 			icon_url: "https://tinyurl.com/y4x8xlat",

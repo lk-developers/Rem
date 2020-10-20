@@ -27,6 +27,7 @@ const handle = async (message) => {
 	message.react("👍");
 
 	const embed = {
+		color: "#7ca8d9",
 		author: {
 			name: "| Player has been stopped!.",
 			icon_url: "https://tinyurl.com/y4x8xlat",

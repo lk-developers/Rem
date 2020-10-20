@@ -7,11 +7,15 @@ const handle = (message) => {
 
 const getHelpEmbed = (prefix) => {
 	return {
+		color: "#7ca8d9",
 		description: "Send ♥ to themes.moe and jikan.moe for their amazing work!.",
 		author: {
 			name: "| Help",
 			icon_url: "https://tinyurl.com/y4x8xlat",
 			url: "https://github.com/lk-developers",
+		},
+		thumbnail: {
+			url: "https://i.imgur.com/oDElnA4.gif",
 		},
 		fields: [
 			{
@@ -112,10 +116,6 @@ const getHelpEmbed = (prefix) => {
 			// 	value: "Show help.",
 			// },
 		],
-		footer: {
-			text: "By LK Developers",
-			icon_url: "https://tinyurl.com/yyhwlrqc",
-		},
 	};
 };
 

@@ -7,15 +7,16 @@ const handle = (message) => {
 
 const getHelpEmbed = (prefix) => {
 	return {
+		color: "#7ca8d9",
 		description:
-			"_I guess, as long as I have life, all I can do is fight with all my might._.",
+			"_I guess, as long as I have life, all I can do is fight with all my might._",
 		author: {
 			name: "| Help",
 			icon_url: "https://tinyurl.com/y4x8xlat",
 			url: "https://github.com/lk-developers",
 		},
 		thumbnail: {
-			url: "https://i.imgur.com/77Q5D0s.gif",
+			url: "https://i.imgur.com/ZXQOUQ9.gif",
 		},
 		fields: [
 			{
@@ -35,10 +36,6 @@ const getHelpEmbed = (prefix) => {
 				value: "Show fun commands.",
 			},
 		],
-		footer: {
-			text: "By LK Developers",
-			icon_url: "https://tinyurl.com/yyhwlrqc",
-		},
 	};
 };
 

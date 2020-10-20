@@ -156,6 +156,7 @@ class Player extends EventEmitter {
 
 	sendNowPlayingEmbed(textChannel = this.textChannel) {
 		const trackEmbed = {
+			color: "#7ca8d9",
 			author: {
 				name: "| Now playing",
 				icon_url: "https://tinyurl.com/y4x8xlat",
@@ -176,6 +177,7 @@ class Player extends EventEmitter {
 
 	sendGeneralEmbed(name, title = null) {
 		const embed = {
+			color: "#7ca8d9",
 			author: {
 				name: `| ${name}`,
 				icon_url: "https://tinyurl.com/y4x8xlat",
