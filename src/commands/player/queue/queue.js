@@ -22,17 +22,16 @@ const handle = async (message) => {
 		return;
 	}
 
-	// get queue from the player
-	const queue = player.getQueue();
-
-	if (queue.length == 0) {
-		message.reply("Queue is empty!.");
-		message.react("🤔");
-		return;
-	}
-
 	try {
+		const queue = player.getQueue();
 		const currentTrack = player.getCurrentTrack();
+
+		// queue is empty and there is no current track
+		if (queue.length == 0 && !currentTrack) {
+			message.reply("Queue is empty!.");
+			message.react("🤔");
+			return;
+		}
 
 		// create a discord block for the playlist
 		let tracks = "";
@@ -42,15 +41,16 @@ const handle = async (message) => {
 			return true;
 		});
 
+		// when there are no tracks
+		if (tracks == "") tracks = "None";
+
 		let queueBlock;
 
 		if (currentTrack) {
 			queueBlock =
 				"```diff\n" +
 				`Total tracks: ${queue.length}\n\n` +
-				`++ Current track:\n${currentTrack.name || "none"} (${
-					currentTrack.type
-				}) "\n\n` +
+				`++ Current track:\n${currentTrack.name} (${currentTrack.type})\n\n` +
 				`--Upcoming tracks:\n${tracks}` +
 				"```";
 		} else {
