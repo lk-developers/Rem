@@ -1,4 +1,5 @@
 const Discord = require("discord.js");
+const { checkSessionTimeout } = require("./store/guildSessions");
 
 const loader = require("./loader");
 const config = require("../config/config.json");
@@ -33,6 +34,11 @@ client.on("message", async (message) => {
 		if (e.code !== "ERR_INVALID_ARG_TYPE") console.log(e);
 		message.reply("Invalid command!");
 	}
+});
+
+// to detect when members join and leave a voice channel
+client.on("voiceStateUpdate", (oldState, newState) => {
+	checkSessionTimeout(oldState, newState);
 });
 
 client.login(config.TOKEN);
