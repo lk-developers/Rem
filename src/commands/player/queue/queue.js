@@ -14,7 +14,7 @@ const handle = async (message) => {
 	}
 
 	// check if guild has a running player
-	const player = guildSessions.get(message.guild.id);
+	const player = guildSessions.getSession(message.guild.id);
 
 	if (!player) {
 		message.reply("There is nothing playing atm!.");
@@ -22,23 +22,46 @@ const handle = async (message) => {
 		return;
 	}
 
+	// get queue from the player
+	const queue = player.getQueue();
+
+	if (queue.length == 0) {
+		message.reply("Queue is empty!.");
+		message.react("🤔");
+		return;
+	}
+
 	try {
+		const currentTrack = player.getCurrentTrack();
+
 		// create a discord block for the playlist
 		let tracks = "";
-		player.queue.every((track, index) => {
+		queue.every((track, index) => {
 			if (index == 10) return false;
 			tracks += `(${index + 1}) ${track.name} (${track.type})\n`;
 			return true;
 		});
 
-		const queue =
-			"```diff\n" +
-			`Total tracks: ${player.queue.length}\n\n` +
-			`++ Current track:\n${player.currentTrack.name} (${player.currentTrack.type})\n\n` +
-			`--Upcoming tracks:\n${tracks}` +
-			"```";
+		let queueBlock;
 
-		message.channel.send(queue);
+		if (currentTrack) {
+			queueBlock =
+				"```diff\n" +
+				`Total tracks: ${queue.length}\n\n` +
+				`++ Current track:\n${currentTrack.name || "none"} (${
+					currentTrack.type
+				}) "\n\n` +
+				`--Upcoming tracks:\n${tracks}` +
+				"```";
+		} else {
+			queueBlock =
+				"```diff\n" +
+				`Total tracks: ${queue.length}\n\n` +
+				`--Upcoming tracks:\n${tracks}` +
+				"```";
+		}
+
+		message.channel.send(queueBlock);
 
 		message.react("👍");
 	} catch (e) {

@@ -6,7 +6,7 @@ const handle = async (message) => {
 	if (message.content.trim() !== `${config.PREFIX}loop`) return;
 
 	// check if guild has a running player
-	const player = guildSessions.get(message.guild.id);
+	const player = guildSessions.getSession(message.guild.id);
 
 	if (!player) {
 		message.reply("There is nothing playing atm!.");
@@ -14,17 +14,15 @@ const handle = async (message) => {
 		return;
 	}
 
+	// toggleLoopQueue() returns the current value of loopQueue property
+	const result = player.toggleLoopQueue();
+
 	let embedText;
 
-	if (player.loopQueue) {
-		player.loopQueue = false;
-		embedText = "Queue looping disabled.";
-	} else {
-		player.loopQueue = true;
-		// when enabling push current track back to the queue
-		player.queue = [...player.queue, player.currentTrack];
-
+	if (result) {
 		embedText = "Queue looping enabled.";
+	} else {
+		embedText = "Queue looping disabled.";
 	}
 
 	// create an embed for the current track

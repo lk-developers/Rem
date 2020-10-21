@@ -34,45 +34,34 @@ const handle = async (message) => {
 	const tracks = playlistDb.get("tracks").value();
 	playlistDb.set("lastRead", new Date().toISOString()).write();
 
-	// if guild already has a running player, use it
-	const player = guildSessions.get(message.guild.id);
-
-	message.reply("I added your playlist to the queue.");
-
-	if (player) {
-		player.addTracksToQueue(tracks);
-		if (!player.state) player.playTrack();
-		message.react("👍");
-		return;
-	}
-
-	// else, create a new player instance for the guild
+	// get a new voice connection
 	const voiceConnection = await voiceChannel.join();
 
-	const newPlayer = guildSessions.create(
-		message.guild.id,
-		message.channel,
-		voiceConnection
-	);
+	// if guild already has a running player, use it
+	let player = guildSessions.getSession(message.guild.id);
 
-	newPlayer.on("queueFinished", () => {
-		console.log(`Queue finished @ ${message.guild.name}`);
-		guildSessions.end(message.guild.id);
-	});
+	// if there is no existing player, create one
+	if (!player) {
+		player = guildSessions.createSession(
+			message.guild.id,
+			message.channel,
+			voiceConnection
+		);
+	}
 
-	newPlayer.on("queueStopped", () => {
-		console.log(`Queue stopped @ ${message.guild.name}`);
-		guildSessions.end(message.guild.id);
-	});
+	const result = player.addTracksToQueue(tracks);
 
-	newPlayer.on("error", (e) => {
-		console.log("Error happend: ", e);
-	});
+	// if everything went well
+	if (!result.code) {
+		if (player.getState() != "playing") {
+			player.play();
+		}
 
-	newPlayer.addTracksToQueue(tracks);
-	newPlayer.playTrack();
-
-	message.react("👍");
+		message.reply("I added your playlist to the queue.");
+		message.react("👍");
+	} else {
+		message.react("😞");
+	}
 };
 
 module.exports = {

@@ -1,52 +1,16 @@
-const { Player } = require("../classes/Player");
+const { RemPlayer } = require("@ipmanlk/rem-player");
 const guildSessions = new Map();
 
-const create = (guildId, textChannel, voiceConnection) => {
-	const player = new Player(voiceConnection, textChannel);
+const createSession = (guildId, textChannel, voiceConnection) => {
+	const player = new RemPlayer(voiceConnection, textChannel);
 
 	// setup player event listeners
 	player.on("youtubeFailed", () => {
 		sendGeneralEmbed("I couldn't find that track on Youtube!.");
 	});
 
-	player.on("themesFailed", () => {
+	player.on("themesMoeFailed", () => {
 		sendGeneralEmbed("I couldn't find themes for that anime!.");
-	});
-
-	player.on("trackAdded", (track) => {
-		sendGeneralEmbed(`${track.name} added to the queue.`);
-	});
-
-	player.on("tracksAdded", (trackCount) => {
-		sendGeneralEmbed(`${trackCount} tracks added to the queue.`);
-	});
-
-	player.on("trackSkipped", () => {
-		sendGeneralEmbed("Track skipped");
-	});
-
-	player.on("trackSkipEmpty", () => {
-		sendGeneralEmbed("There are no more tracks left!.");
-	});
-
-	player.on("trackRemoved", () => {
-		sendGeneralEmbed("Track removed from the queue!.");
-	});
-
-	player.on("queuePaused", () => {
-		sendGeneralEmbed("Queue paused!.");
-	});
-
-	player.on("queueResumed", () => {
-		sendGeneralEmbed("Queue resumed!.");
-	});
-
-	player.on("queueFull", () => {
-		sendGeneralEmbed("Queue is full!. Skip or Stop the current session first.");
-	});
-
-	player.on("queueStopped", () => {
-		sendGeneralEmbed("Queue stopped!.");
 	});
 
 	player.on("nowPlaying", (track) => {
@@ -70,8 +34,20 @@ const create = (guildId, textChannel, voiceConnection) => {
 		player.textChannel.send({ embed: trackEmbed });
 	});
 
+	player.on("trackAdded", (track) => {
+		sendGeneralEmbed(`${track.name} added to the queue.`);
+	});
+
+	player.on("tracksAdded", (trackCount) => {
+		sendGeneralEmbed(`${trackCount} tracks added to the queue.`);
+	});
+
+	player.on("queueFull", () => {
+		sendGeneralEmbed("Queue is full!. Skip or Stop the current session first.");
+	});
+
 	player.on("queueFinished", () => {
-		end(guildId);
+		endSession(guildId);
 		sendGeneralEmbed("Queue finished.");
 	});
 
@@ -96,17 +72,17 @@ const create = (guildId, textChannel, voiceConnection) => {
 	return guildSessions.get(guildId);
 };
 
-const end = (guildId) => {
+const endSession = (guildId) => {
 	guildSessions.delete(guildId);
 };
 
-const get = (guildId) => {
+const getSession = (guildId) => {
 	const session = guildSessions.get(guildId);
 	return session ? session : false;
 };
 
 module.exports = {
-	create,
-	end,
-	get,
+	createSession,
+	endSession,
+	getSession,
 };

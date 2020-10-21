@@ -22,9 +22,9 @@ const handle = async (message) => {
 	}
 
 	// check if guild has a running player
-	const player = guildSessions.get(message.guild.id);
+	const player = guildSessions.getSession(message.guild.id);
 
-	if (!player) {
+	if (!player || !player.getCurrentTrack()) {
 		message.reply("There is nothing playing atm!.");
 		message.react("😡");
 		return;
