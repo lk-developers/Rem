@@ -14,34 +14,64 @@ const handle = async (message) => {
 	const keywordOrUrl =
 		message.content.trim().split(`${config.PREFIX}play`)[1].trim() || false;
 
-	// if guild already has a running player, use it
-	const player = guildSessions.get(message.guild.id);
+	// get a new voice connection
+	const voiceConnection = await voiceChannel.join();
 
-	// check if player is paused if this is a resume command and keywordOrUrl is false
-	if (!keywordOrUrl && player.state !== "paused") {
-		message.reply("Please provide a valid track name or a url!.");
-		message.react("😡");
+	// if guild already has a running player, use it
+	let player = guildSessions.getSession(message.guild.id);
+
+	// if there is no existing player, create one
+	if (!player) {
+		player = guildSessions.createSession(
+			message.guild.id,
+			message.channel,
+			voiceConnection
+		);
+	}
+
+	// if this is a resume command, keyword is false
+	if (!keywordOrUrl) {
+		const result = player.play();
+
+		// no result if everything went fine
+		if (!result) {
+			const embed = {
+				color: "#7ca8d9",
+				author: {
+					name: "| Queue resumed.",
+					icon_url: "https://tinyurl.com/y4x8xlat",
+				},
+			};
+
+			message.reply({ embed: embed });
+			return;
+		}
+
+		// else, use error codes to determine what happened
+		if (result.code == "queueNotPaused") {
+			message.reply("Queue is not paused!.");
+			message.react("😡");
+		}
+
+		if (result.code == "noDispatcher") {
+			message.reply("Please provide a track name or a url!.");
+			message.react("😡");
+		}
 		return;
 	}
 
-	if (player) {
-		player.playYoutubeTracks(keywordOrUrl);
+	// otherwise, consider this a new play command with a keyword or link
+	const result = player.playYoutubeTracks(keywordOrUrl);
+
+	if (!result) {
 		message.react("👍");
 		return;
 	}
 
-	// else, create a new player instance for the guild
-	const voiceConnection = await voiceChannel.join();
-
-	const newPlayer = guildSessions.create(
-		message.guild.id,
-		message.channel,
-		voiceConnection
-	);
-
-	newPlayer.playYoutubeTracks(keywordOrUrl);
-
-	message.react("👍");
+	if (result.code == "keywordEmpty") {
+		message.reply("Please provide a valid track name or a url!.");
+		message.react("😡");
+	}
 };
 
 module.exports = {

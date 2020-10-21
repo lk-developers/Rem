@@ -11,7 +11,7 @@ const handle = async (message) => {
 	}
 
 	// check if guild has a running player
-	const player = guildSessions.get(message.guild.id);
+	const player = guildSessions.getSession(message.guild.id);
 
 	if (!player) {
 		message.reply("There is nothing playing atm!.");
@@ -24,16 +24,33 @@ const handle = async (message) => {
 	position = isNaN(position) ? null : parseInt(position);
 
 	// check if position is invalid
-	if (!player.queue[position - 1]) {
+	if (!position) {
 		message.reply("Invalid position!. Please check the queue again.");
 		message.react("😡");
 		return;
 	}
 
 	// remove track from the queue
-	player.remove(position);
+	const result = player.removeTrack(position);
 
-	message.react("👍");
+	if (!result) {
+		const embed = {
+			color: "#7ca8d9",
+			author: {
+				name: "| Track removed.",
+				icon_url: "https://tinyurl.com/y4x8xlat",
+			},
+		};
+
+		message.reply({ embed: embed });
+		message.react("👍");
+		return;
+	}
+
+	if (result.code == "trackNotFound") {
+		message.reply("There is no track in that position!.");
+		message.react("😡");
+	}
 };
 
 module.exports = {

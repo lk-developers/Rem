@@ -6,9 +6,10 @@ const handle = async (message) => {
 	if (message.content.trim() !== `${config.PREFIX}np`) return;
 
 	// check if guild has a running player
-	const player = guildSessions.get(message.guild.id);
+	const player = guildSessions.getSession(message.guild.id);
+	const currentTrack = player.getCurrentTrack() || false;
 
-	if (!player) {
+	if (!player || !currentTrack) {
 		message.reply("There is nothing playing atm!.");
 		message.react("😡");
 		return;
@@ -26,8 +27,8 @@ const handle = async (message) => {
 		},
 		fields: [
 			{
-				name: `${player.currentTrack.name} (${player.currentTrack.type})`,
-				value: `Source: [Click Here](${player.currentTrack.url})`,
+				name: `${currentTrack.name} (${currentTrack.type})`,
+				value: `Source: [Click Here](${currentTrack.url})`,
 			},
 		],
 	};

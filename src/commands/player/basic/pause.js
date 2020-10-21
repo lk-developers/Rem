@@ -14,7 +14,7 @@ const handle = async (message) => {
 	}
 
 	// check if guild has a running player
-	const player = guildSessions.get(message.guild.id);
+	const player = guildSessions.getSession(message.guild.id);
 
 	if (!player) {
 		message.reply("There is nothing to pause!.");
@@ -22,9 +22,26 @@ const handle = async (message) => {
 		return;
 	}
 
-	player.pause();
+	const result = player.pause();
 
-	message.react("👍");
+	if (!result) {
+		const embed = {
+			color: "#7ca8d9",
+			author: {
+				name: "| Queue paused.",
+				icon_url: "https://tinyurl.com/y4x8xlat",
+			},
+		};
+
+		message.reply({ embed: embed });
+		message.react("👍");
+		return;
+	}
+
+	if (result.code == "noDispatcher") {
+		message.reply("Nothing is playing right now!.");
+		message.react("😡");
+	}
 };
 
 module.exports = {

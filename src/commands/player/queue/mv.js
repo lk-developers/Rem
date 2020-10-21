@@ -11,7 +11,7 @@ const handle = async (message) => {
 	}
 
 	// check if guild has a running player
-	const player = guildSessions.get(message.guild.id);
+	const player = guildSessions.getSession(message.guild.id);
 
 	if (!player) {
 		message.reply("There is nothing playing atm!.");
@@ -35,36 +35,29 @@ const handle = async (message) => {
 		return;
 	}
 
-	// check of given positions exists
-	if (!player.queue[currentPosition - 1] || !player.queue[newPosition - 1]) {
+	const result = player.moveTrack(currentPosition, newPosition);
+
+	// if everything went well
+	if (!result) {
+		const embed = {
+			color: "#7ca8d9",
+			author: {
+				name: "| Track moved!.",
+				icon_url: "https://tinyurl.com/y4x8xlat",
+			},
+		};
+
+		message.reply({ embed: embed });
+		message.react("👍");
+		return;
+	}
+
+	if (result.code == "invalidPositions") {
 		message.reply(
 			"Positions you gave me are invalid!. Please check the queue again."
 		);
 		message.react("😡");
-		return;
 	}
-
-	// move tracks
-	player.queue = moveIndex(player.queue, currentPosition - 1, newPosition - 1);
-
-	const embed = {
-		color: "#7ca8d9",
-		author: {
-			name: "| Track moved!.",
-			icon_url: "https://tinyurl.com/y4x8xlat",
-		},
-	};
-
-	message.reply({ embed: embed });
-	message.react("👍");
-};
-
-const moveIndex = (array, oldIndex, newIndex) => {
-	if (newIndex >= array.length) {
-		newIndex = array.length - 1;
-	}
-	array.splice(newIndex, 0, array.splice(oldIndex, 1)[0]);
-	return array;
 };
 
 module.exports = {

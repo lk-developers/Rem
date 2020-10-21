@@ -11,7 +11,7 @@ const handle = async (message) => {
 	}
 
 	// check if guild has a running player
-	const player = guildSessions.get(message.guild.id);
+	const player = guildSessions.getSession(message.guild.id);
 
 	if (!player) {
 		message.reply("There is nothing playing atm!.");
@@ -19,10 +19,10 @@ const handle = async (message) => {
 		return;
 	}
 
-	// check if a position is given (null when not given)
+	// check if a position is given (false when not given)
 	let position =
-		message.content.trim().split(`${config.PREFIX}skip`)[1] || null;
-	position = isNaN(position) ? null : parseInt(position);
+		message.content.trim().split(`${config.PREFIX}skip`)[1] || false;
+	position = isNaN(position) ? false : parseInt(position);
 
 	// check if position is invalid
 	if (position && !player.queue[position - 1]) {
@@ -32,9 +32,31 @@ const handle = async (message) => {
 	}
 
 	// skip tracks
-	player.skip(position);
+	const result = player.skip(position);
 
-	message.react("👍");
+	if (!result) {
+		const embed = {
+			color: "#7ca8d9",
+			author: {
+				name: "| Track skipped.",
+				icon_url: "https://tinyurl.com/y4x8xlat",
+			},
+		};
+
+		message.reply({ embed: embed });
+		message.react("👍");
+		return;
+	}
+
+	if (result.code == "trackSkipEmpty") {
+		message.reply("There are no more tracks to skip!.");
+		message.react("😡");
+	}
+
+	if (result.code == "noDispatcher") {
+		message.reply("Nothing is playing atm!.");
+		message.react("😡");
+	}
 };
 
 module.exports = {

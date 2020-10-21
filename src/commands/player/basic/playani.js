@@ -14,32 +14,34 @@ const handle = async (message) => {
 	const animeName =
 		message.content.trim().split(`${config.PREFIX}playani`)[1].trim() || false;
 
-	if (!animeName) {
-		message.reply("Please provide a valid anime name!");
-		return;
-	}
+	// get a new voice connection
+	const voiceConnection = await voiceChannel.join();
 
 	// if guild already has a running player, use it
-	const player = guildSessions.get(message.guild.id);
+	let player = guildSessions.getSession(message.guild.id);
 
-	if (player) {
-		player.playAnimeTracks(animeName);
+	// if there is no existing player, create one
+	if (!player) {
+		player = guildSessions.createSession(
+			message.guild.id,
+			message.channel,
+			voiceConnection
+		);
+	}
+
+	const result = player.playAnimeTracks(animeName);
+
+	// no result if everything went fine
+	if (!result) {
 		message.react("👍");
 		return;
 	}
 
-	// else, create a new player instance for the guild
-	const voiceConnection = await voiceChannel.join();
-
-	const newPlayer = guildSessions.create(
-		message.guild.id,
-		message.channel,
-		voiceConnection
-	);
-
-	newPlayer.playAnimeTracks(animeName);
-
-	message.react("👍");
+	// else, use error codes to determine what happened
+	if (result.code == "keywordEmpty") {
+		message.reply("Please provide a valid anime name!.");
+		message.react("😡");
+	}
 };
 
 module.exports = {
