@@ -8,7 +8,7 @@ const getHelpEmbed = (prefix) => {
 		color: "#7ca8d9",
 		description: "Send ♥ to themes.moe and jikan.moe for their amazing work!.",
 		author: {
-			name: "| Help",
+			name: "| Music Player Commands",
 			icon_url: "https://tinyurl.com/y4x8xlat",
 			url: "https://github.com/lk-developers",
 		},

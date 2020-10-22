@@ -9,7 +9,7 @@ const getHelpEmbed = (prefix) => {
 		description:
 			"_I guess, as long as I have life, all I can do is fight with all my might._",
 		author: {
-			name: "| Help",
+			name: "| Help Commands",
 			icon_url: "https://tinyurl.com/y4x8xlat",
 			url: "https://github.com/lk-developers",
 		},
@@ -18,12 +18,8 @@ const getHelpEmbed = (prefix) => {
 		},
 		fields: [
 			{
-				name: "Commands summery",
-				value: "----------------------------------------",
-			},
-			{
 				name: `${prefix}help`,
-				value: "Show help.",
+				value: "Show help commands.",
 			},
 			{
 				name: `${prefix}shelp`,

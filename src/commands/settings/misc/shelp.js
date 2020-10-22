@@ -9,7 +9,7 @@ const getHelpEmbed = (prefix) => {
 		description:
 			"_What’s wrong with taking the path that’s easiest, that will let me live longer?._",
 		author: {
-			name: "| Configuration Help",
+			name: "| Configuration Commands",
 			icon_url: "https://tinyurl.com/y4x8xlat",
 			url: "https://github.com/lk-developers",
 		},
