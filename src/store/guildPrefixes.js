@@ -19,19 +19,13 @@ const prefixDbAdapter = new FileSync(prefixDbPath);
 const prefixDb = low(prefixDbAdapter);
 
 const setGuildPrefix = (guildId, prefix) => {
-	prefixDb
-		.get("records")
-		.remove({ guildId: guildId })
-		.write();
+	prefixDb.get("records").remove({ guildId: guildId }).write();
 
-	prefixDb
-		.get("records")
-		.push({ guildId: guildId, prefix: prefix })
-		.write();
+	prefixDb.get("records").push({ guildId: guildId, prefix: prefix }).write();
 };
 
 const getGuildPrefix = (guildId) => {
-	const record = prefixDb.get("records").find({ key: guildId }).value();
+	const record = prefixDb.get("records").find({ guildId: guildId }).value();
 	// if this guild has a custom prefix
 	if (record) {
 		return record.prefix;

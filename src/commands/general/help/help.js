@@ -26,6 +26,10 @@ const getHelpEmbed = (prefix) => {
 				value: "Show help.",
 			},
 			{
+				name: `${prefix}shelp`,
+				value: "Show configuration commands.",
+			},
+			{
 				name: `${prefix}phelp`,
 				value: "Show music player commands.",
 			},
