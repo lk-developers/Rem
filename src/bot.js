@@ -1,12 +1,11 @@
 const Discord = require("discord.js");
 const { checkSessionTimeout } = require("./store/guildSessions");
+const { getGuildPrefix } = require("./store/guildPrefixes");
 
 const loader = require("./loader");
 const config = require("../config/config.json");
 
 const client = new Discord.Client();
-
-const PREFIX = config.PREFIX;
 
 let COMMANDS;
 // load commands
@@ -21,6 +20,9 @@ client.once("ready", () => {
 });
 
 client.on("message", async (message) => {
+	// get prefix for this guild
+	const PREFIX = getGuildPrefix(message.guild.id);
+
 	// ignore bot messages and messages doesn't start with the prefix
 	if (message.author.bot || !message.content.startsWith(PREFIX)) return;
 
@@ -29,7 +31,7 @@ client.on("message", async (message) => {
 		const messageContent = message.content.trim();
 		const command = messageContent.split(PREFIX)[1].split(" ")[0];
 		const module = require(COMMANDS[command]);
-		module.handle(message);
+		module.handle(message, PREFIX);
 	} catch (e) {
 		if (e.code !== "ERR_INVALID_ARG_TYPE") console.log(e);
 		message.reply("Invalid command!");

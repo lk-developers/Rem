@@ -3,13 +3,12 @@ const low = require("lowdb");
 const FileSync = require("lowdb/adapters/FileSync");
 
 const guildSessions = require(`${process.cwd()}/src/store/guildSessions`);
-const config = require(`${process.cwd()}/config/config.json`);
 
 const playlistDir = `${process.cwd()}/playlists`;
 
-const handle = async (message) => {
+const handle = async (message, prefix) => {
 	// check command
-	if (message.content.trim() !== `${config.PREFIX}pladd`) return;
+	if (message.content.trim() !== `${prefix}pladd`) return;
 
 	const playlistPath = `${playlistDir}/${message.member.id}.json`;
 

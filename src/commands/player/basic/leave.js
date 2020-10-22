@@ -1,8 +1,6 @@
-const config = require(`${process.cwd()}/config/config.json`);
-
-const handle = async (message) => {
+const handle = async (message, prefix) => {
 	// check command
-	if (message.content.trim() !== `${config.PREFIX}leave`) return;
+	if (message.content.trim() !== `${prefix}leave`) return;
 
 	// check if member is in a voice channel
 	const voiceChannel = message.member.voice.channel;

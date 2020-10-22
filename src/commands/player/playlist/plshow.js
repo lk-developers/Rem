@@ -2,13 +2,11 @@ const { existsSync } = require("fs");
 const low = require("lowdb");
 const FileSync = require("lowdb/adapters/FileSync");
 
-const config = require(`${process.cwd()}/config/config.json`);
-
 const playlistDir = `${process.cwd()}/playlists`;
 
-const handle = async (message) => {
+const handle = async (message, prefix) => {
 	// check command
-	if (message.content.trim() !== `${config.PREFIX}plshow`) return;
+	if (message.content.trim() !== `${prefix}plshow`) return;
 
 	const playlistPath = `${playlistDir}/${message.member.id}.json`;
 

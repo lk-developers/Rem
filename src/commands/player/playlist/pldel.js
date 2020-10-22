@@ -2,11 +2,9 @@ const { existsSync, unlinkSync } = require("fs");
 const low = require("lowdb");
 const FileSync = require("lowdb/adapters/FileSync");
 
-const config = require(`${process.cwd()}/config/config.json`);
-
 const playlistDir = `${process.cwd()}/playlists`;
 
-const handle = async (message) => {
+const handle = async (message, prefix) => {
 	const playlistPath = `${playlistDir}/${message.member.id}.json`;
 
 	if (!existsSync(playlistPath)) {
@@ -17,7 +15,7 @@ const handle = async (message) => {
 
 	// check if position is given
 	let trackPosition =
-		message.content.trim().split(`${config.PREFIX}pldel`)[1] || null;
+		message.content.trim().split(`${prefix}pldel`)[1] || null;
 	trackPosition = isNaN(trackPosition) ? null : parseInt(trackPosition);
 
 	if (!trackPosition) {

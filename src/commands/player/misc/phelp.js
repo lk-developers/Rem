@@ -1,7 +1,5 @@
-const config = require(`${process.cwd()}/config/config.json`);
-
-const handle = (message) => {
-	const embed = getHelpEmbed(config.PREFIX);
+const handle = (message, prefix) => {
+	const embed = getHelpEmbed(prefix);
 	message.reply({ embed: embed });
 };
 

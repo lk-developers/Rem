@@ -122,4 +122,5 @@ cache/*
 playlists/*
 !playlists/.gitkeep
 
-src/libs/RemPlayer
+data/*
+!data/.gitkeep

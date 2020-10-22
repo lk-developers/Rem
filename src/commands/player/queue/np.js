@@ -1,9 +1,8 @@
 const guildSessions = require(`${process.cwd()}/src/store/guildSessions`);
-const config = require(`${process.cwd()}/config/config.json`);
 
-const handle = async (message) => {
+const handle = async (message, prefix) => {
 	// check command
-	if (message.content.trim() !== `${config.PREFIX}np`) return;
+	if (message.content.trim() !== `${prefix}np`) return;
 
 	// check if guild has a running player
 	const player = guildSessions.getSession(message.guild.id);

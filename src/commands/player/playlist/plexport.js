@@ -1,13 +1,11 @@
 const { MessageAttachment } = require("discord.js");
 const { existsSync } = require("fs");
 
-const config = require(`${process.cwd()}/config/config.json`);
-
 const playlistDir = `${process.cwd()}/playlists`;
 
-const handle = async (message) => {
+const handle = async (message, prefix) => {
 	// check command
-	if (message.content.trim() !== `${config.PREFIX}plexport`) return;
+	if (message.content.trim() !== `${prefix}plexport`) return;
 
 	const playlistPath = `${playlistDir}/${message.member.id}.json`;
 

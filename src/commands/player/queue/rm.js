@@ -1,7 +1,6 @@
 const guildSessions = require(`${process.cwd()}/src/store/guildSessions`);
-const config = require(`${process.cwd()}/config/config.json`);
 
-const handle = async (message) => {
+const handle = async (message, prefix) => {
 	// check if member is in a voice channel
 	const voiceChannel = message.member.voice.channel;
 	if (!voiceChannel) {
@@ -20,7 +19,7 @@ const handle = async (message) => {
 	}
 
 	// check if a position is given (null when not given)
-	let position = message.content.trim().split(`${config.PREFIX}rm`)[1] || null;
+	let position = message.content.trim().split(`${prefix}rm`)[1] || null;
 	position = isNaN(position) ? null : parseInt(position);
 
 	// check if position is invalid

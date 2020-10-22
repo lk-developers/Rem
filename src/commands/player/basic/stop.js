@@ -1,9 +1,8 @@
 const guildSessions = require(`${process.cwd()}/src/store/guildSessions`);
-const config = require(`${process.cwd()}/config/config.json`);
 
-const handle = async (message) => {
+const handle = async (message, prefix) => {
 	// check command
-	if (message.content.trim() !== `${config.PREFIX}stop`) return;
+	if (message.content.trim() !== `${prefix}stop`) return;
 
 	// check if member is in a voice channel
 	const voiceChannel = message.member.voice.channel;

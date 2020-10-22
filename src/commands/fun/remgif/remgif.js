@@ -1,9 +1,8 @@
-const config = require(`${process.cwd()}/config/config.json`);
 const gfycat = require(`${process.cwd()}/src/libs/gfycat`);
 
-const handle = (message) => {
+const handle = (message, prefix) => {
 	// check command
-	if (message.content.trim() !== `${config.PREFIX}remgif`) return;
+	if (message.content.trim() !== `${prefix}remgif`) return;
 
 	gfycat
 		.getRandomGif("re zero rem")

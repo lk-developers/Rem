@@ -1,7 +1,6 @@
 const guildSessions = require(`${process.cwd()}/src/store/guildSessions`);
-const config = require(`${process.cwd()}/config/config.json`);
 
-const handle = async (message) => {
+const handle = async (message, prefix) => {
 	// check if member is in a voice channel
 	const voiceChannel = message.member.voice.channel;
 	if (!voiceChannel) {
@@ -12,7 +11,7 @@ const handle = async (message) => {
 
 	// get track name or url. set to false if neither one is found
 	const keywordOrUrl =
-		message.content.trim().split(`${config.PREFIX}play`)[1].trim() || false;
+		message.content.trim().split(`${prefix}play`)[1].trim() || false;
 
 	// get a new voice connection
 	const voiceConnection = await voiceChannel.join();

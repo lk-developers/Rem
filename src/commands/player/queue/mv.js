@@ -1,7 +1,6 @@
 const guildSessions = require(`${process.cwd()}/src/store/guildSessions`);
-const config = require(`${process.cwd()}/config/config.json`);
 
-const handle = async (message) => {
+const handle = async (message, prefix) => {
 	// check if member is in a voice channel
 	const voiceChannel = message.member.voice.channel;
 	if (!voiceChannel) {
@@ -21,7 +20,7 @@ const handle = async (message) => {
 
 	const positions = message.content
 		.trim()
-		.split(`${config.PREFIX}mv`)[1]
+		.split(`${prefix}mv`)[1]
 		.split(",");
 
 	const currentPosition = parseInt(positions[0]) || false;
