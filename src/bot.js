@@ -34,7 +34,7 @@ client.on("message", async (message) => {
 		module.handle(message, PREFIX);
 	} catch (e) {
 		if (e.code !== "ERR_INVALID_ARG_TYPE") console.log(e);
-		message.reply("Invalid command!");
+		message.react("😡");
 	}
 });
 
