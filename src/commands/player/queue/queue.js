@@ -1,3 +1,4 @@
+const { formatSeconds } = require(`${process.cwd()}/src/util/common.js`);
 const guildSessions = require(`${process.cwd()}/src/store/guildSessions`);
 const config = require(`${process.cwd()}/config/config.json`);
 
@@ -37,7 +38,10 @@ const handle = async (message, prefix) => {
 		let tracks = "";
 		queue.every((track, index) => {
 			if (index == 10) return false;
-			tracks += `(${index + 1}) ${track.name} (${track.type})\n`;
+			const duration = track.duration
+				? `[${formatSeconds(track.duration)}]`
+				: "";
+			tracks += `(${index + 1}) ${track.name} (${track.type}) ${duration}\n`;
 			return true;
 		});
 
@@ -47,10 +51,13 @@ const handle = async (message, prefix) => {
 		let queueBlock;
 
 		if (currentTrack) {
+			const duration = currentTrack.duration
+				? `[${formatSeconds(currentTrack.duration)}]`
+				: "";
 			queueBlock =
 				"```diff\n" +
 				`Total tracks: ${queue.length}\n\n` +
-				`++ Current track:\n${currentTrack.name} (${currentTrack.type})\n\n` +
+				`++ Current track:\n${currentTrack.name} (${currentTrack.type}) ${duration}\n\n` +
 				`--Upcoming tracks:\n${tracks}` +
 				"```";
 		} else {

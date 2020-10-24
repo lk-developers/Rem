@@ -1,3 +1,4 @@
+const { formatSeconds } = require(`${process.cwd()}/src/util/common.js`);
 const guildSessions = require(`${process.cwd()}/src/store/guildSessions`);
 
 const handle = async (message, prefix) => {
@@ -14,6 +15,10 @@ const handle = async (message, prefix) => {
 		return;
 	}
 
+	// duration label
+	const duration = currentTrack.duration
+		? `[${formatSeconds(currentTrack.duration)}]`
+		: "";
 	// create an embed for the current track
 	const trackEmbed = {
 		color: "#7ca8d9",
@@ -26,8 +31,8 @@ const handle = async (message, prefix) => {
 		},
 		fields: [
 			{
-				name: `${currentTrack.name} (${currentTrack.type})`,
-				value: `Source: [Click Here](${currentTrack.url})`,
+				name: `${currentTrack.name} (${currentTrack.type}) ${duration}`,
+				value: `Source: [Click Here](${currentTrack.uri})`,
 			},
 		],
 	};
