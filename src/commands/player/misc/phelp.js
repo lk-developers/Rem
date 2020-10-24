@@ -21,12 +21,9 @@ const getHelpEmbed = (prefix) => {
 				value: "----------------------------------------",
 			},
 			{
-				name: `${prefix}play <song name> or <youtube url> or <youtube playlist url>`,
-				value: "Start playing a track from youtube.",
-			},
-			{
-				name: `${prefix}playani <anime name>`,
-				value: "Start playing OPs & EDs from themes.moe.\n\u200B",
+				name: `${prefix}play <song name> or <url> -type <source>`,
+				value:
+					"Start playing tracks.\n\nTrack names, Youtube links, Spotify Links and many more are supported. \n\nYou can use optional **-type** flag to avoid automatic detection. **Supported flag values are: yt/youtube, sp/spotify, mh/mp3hunter, tm/themesmoe**\n\nExample,\n,play Naruto op1\n,play Naruto -type tm\n\u200B",
 			},
 			{
 				name: "Basic controls",
@@ -54,8 +51,13 @@ const getHelpEmbed = (prefix) => {
 			},
 			{
 				name: `${prefix}leave`,
-				value: "Leave from voice channel.\n\u200B",
+				value: "Leave from voice channel.",
 				inline: true,
+			},
+			{
+				name: `${prefix}seek <duration>`,
+				value:
+					"Seek track by given duration. **ms,s,m,h units are supported.**\n\nExample,\n,seek 30s\n\u200B",
 			},
 			{
 				name: "Queue commands",

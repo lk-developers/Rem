@@ -10,7 +10,7 @@ const handle = async (message, prefix) => {
 	}
 
 	// get track name or url. set to false if neither one is found
-	const keywordOrUrl =
+	let keywordOrUrl =
 		message.content.trim().split(`${prefix}play`)[1].trim() || false;
 
 	// get a new voice connection
@@ -59,8 +59,15 @@ const handle = async (message, prefix) => {
 		return;
 	}
 
+	// check if type options are provided
+	let type = false;
+	if (keywordOrUrl.indexOf("-type") > -1) {
+		const parts = keywordOrUrl.split("-type");
+		keywordOrUrl = parts[0].trim();
+		type = parts[1].trim() == "" ? false : parts[1].trim();
+	}
 	// otherwise, consider this a new play command with a keyword or link
-	const result = player.playTracks(keywordOrUrl);
+	const result = player.playTracks(keywordOrUrl, { type: type });
 
 	if (!result) {
 		message.react("👍");
