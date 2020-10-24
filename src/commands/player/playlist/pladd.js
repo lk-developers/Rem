@@ -59,7 +59,7 @@ const handle = async (message, prefix) => {
 	// check for duplicates
 	const track = playlistDb
 		.get("tracks")
-		.find({ url: player.currentTrack.url })
+		.find({ uri: player.currentTrack.uri })
 		.value();
 
 	if (track) {
@@ -69,7 +69,17 @@ const handle = async (message, prefix) => {
 	}
 
 	// add to playlist
-	playlistDb.get("tracks").push(player.currentTrack).write();
+	playlistDb
+		.get("tracks")
+		.push({
+			uri: player.currentTrack.uri,
+			name: player.currentTrack.name,
+			type:
+				player.currentTrack.type == "spotify"
+					? "youtube"
+					: player.currentTrack.type,
+		})
+		.write();
 	playlistDb.set("lastUpdated", new Date().toISOString()).write();
 
 	message.reply("Track saved to your playlist!.");
