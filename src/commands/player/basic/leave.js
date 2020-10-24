@@ -15,7 +15,7 @@ const handle = async (message, prefix) => {
 	// if there is a active session, end it
 	const player = guildSessions.getSession(message.guild.id);
 
-	if (!player) {
+	if (player) {
 		player.stop();
 		guildSessions.endSession(message.guild.id);
 	}

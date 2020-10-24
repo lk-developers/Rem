@@ -19,8 +19,7 @@ const handle = async (message, prefix) => {
 	}
 
 	// check if a position is given (false when not given)
-	let position =
-		message.content.trim().split(`${prefix}skip`)[1] || false;
+	let position = message.content.trim().split(`${prefix}skip`)[1] || false;
 	position = isNaN(position) ? false : parseInt(position);
 
 	// check if position is invalid
@@ -34,15 +33,6 @@ const handle = async (message, prefix) => {
 	const result = player.skip(position);
 
 	if (!result) {
-		const embed = {
-			color: "#7ca8d9",
-			author: {
-				name: "| Track skipped.",
-				icon_url: "https://tinyurl.com/y4x8xlat",
-			},
-		};
-
-		message.reply({ embed: embed });
 		message.react("👍");
 		return;
 	}

@@ -59,13 +59,22 @@ const handle = async (message, prefix) => {
 		return;
 	}
 
+	const typeAlias = {
+		yt: "youtube",
+		sp: "spotify",
+		mh: "mp3hunter",
+		tm: "themesmoe",
+	};
+
 	// check if type options are provided
 	let type = false;
 	if (keywordOrUrl.indexOf("-type") > -1) {
 		const parts = keywordOrUrl.split("-type");
 		keywordOrUrl = parts[0].trim();
 		type = parts[1].trim() == "" ? false : parts[1].trim();
+		if (typeAlias[type]) type = typeAlias[type];
 	}
+
 	// otherwise, consider this a new play command with a keyword or link
 	const result = player.playTracks(keywordOrUrl, { type: type });
 

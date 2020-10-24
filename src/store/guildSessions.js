@@ -14,10 +14,6 @@ const createSession = (guildId, textChannel, voiceConnection) => {
 		sendGeneralEmbed("Sorry. I couldn't find any tracks for you.");
 	});
 
-	player.on("trackFindFailed", () => {
-		sendGeneralEmbed("Sorry. I couldn't find any tracks for you.");
-	});
-
 	player.on("nowPlaying", (track) => {
 		const trackEmbed = {
 			color: "#7ca8d9",
