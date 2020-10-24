@@ -116,11 +116,13 @@ dist
 .pnp.*
 
 # cache
-cache/*
-!cache/.gitkeep
+cache/
 
 playlists/*
 !playlists/.gitkeep
 
 data/*
 !data/.gitkeep
+
+*.ignore.*
+

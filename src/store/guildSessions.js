@@ -6,12 +6,16 @@ const createSession = (guildId, textChannel, voiceConnection) => {
 	const player = new RemPlayer(voiceConnection, textChannel);
 
 	// setup player event listeners
-	player.on("youtubeFailed", () => {
-		sendGeneralEmbed("I couldn't find that track on Youtube!.");
+	player.on("trackFindStart", () => {
+		sendGeneralEmbed("🔎 Please wait....I'm searching for tracks.");
 	});
 
-	player.on("themesMoeFailed", () => {
-		sendGeneralEmbed("I couldn't find themes for that anime!.");
+	player.on("trackFindFailed", () => {
+		sendGeneralEmbed("Sorry. I couldn't find any tracks for you.");
+	});
+
+	player.on("trackFindFailed", () => {
+		sendGeneralEmbed("Sorry. I couldn't find any tracks for you.");
 	});
 
 	player.on("nowPlaying", (track) => {
@@ -27,7 +31,7 @@ const createSession = (guildId, textChannel, voiceConnection) => {
 			fields: [
 				{
 					name: `${track.name} (${track.type})`,
-					value: `Source: [Click Here](${track.url})`,
+					value: `Source: [Click Here](${track.uri})`,
 				},
 			],
 		};

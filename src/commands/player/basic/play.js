@@ -60,7 +60,7 @@ const handle = async (message, prefix) => {
 	}
 
 	// otherwise, consider this a new play command with a keyword or link
-	const result = player.playYoutubeTracks(keywordOrUrl);
+	const result = player.playTracks(keywordOrUrl);
 
 	if (!result) {
 		message.react("👍");
