@@ -11,7 +11,7 @@ const handle = async (message, prefix) => {
 	// check if guild has a running player
 	const player = guildSessions.getSession(message.guild.id);
 	if (!player) {
-		message.reply("There is nothing to pause!.");
+		message.reply("There is nothing to seek!.");
 		message.react("😡");
 		return;
 	}

@@ -11,7 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "@discordjs/opus": "^0.3.2",
-    "@ipmanlk/rem-player": "^1.0.9",
+    "@ipmanlk/rem-player": "^1.1.0",
     "canvas": "^2.6.1",
     "cheerio": "^1.0.0-rc.3",
     "discord.js": "^12.3.1",

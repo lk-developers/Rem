@@ -1,6 +1,8 @@
 const handle = (message, prefix) => {
-	const embed = getHelpEmbed(prefix);
-	message.reply({ embed: embed });
+	let embed = getHelpEmbed(prefix);
+	message.channel.send({ embed: embed });
+	embed = getHelpEmbed2(prefix);
+	message.channel.send({ embed: embed });
 };
 
 const getHelpEmbed = (prefix) => {
@@ -121,14 +123,34 @@ const getHelpEmbed = (prefix) => {
 				value: "Export your playlist.\n\u200B",
 				inline: true,
 			},
-			// {
-			// 	name: "Other commands",
-			// 	value: "----------------------------------------",
-			// },
-			// {
-			// 	name: `${prefix}help`,
-			// 	value: "Show help.",
-			// },
+		],
+	};
+};
+
+const getHelpEmbed2 = (prefix) => {
+	return {
+		color: "#7ca8d9",
+		fields: [
+			{
+				name: "Filters",
+				value:
+					"----------------------------------------\n\n**bassboost, eightD, vaporwave, nightcore, phaser, tremolo, vibrato, reverse, treble,normalizer, surrounding, pulsator, subboost, karaoke, flanger, gate, haas ,mcompand**",
+			},
+			{
+				name: `${prefix}fadd <filter name>`,
+				value: "Apply filter.",
+				inline: true,
+			},
+			{
+				name: `${prefix}frm <filter name>`,
+				value: "Disable filter.",
+				inline: true,
+			},
+			{
+				name: `${prefix}clear`,
+				value: "Disable all active filters.",
+				inline: true,
+			},
 		],
 	};
 };
