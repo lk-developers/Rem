@@ -112,7 +112,7 @@ const checkSessionTimeout = (oldState, newState) => {
 		const player = getSession(guildId);
 
 		// if voice channel has no members, start a timeout
-		if (player && oldUserChannel.members.size == 1) {
+		if (player && oldUserChannel.members.size == 0) {
 			// get player voice channel
 			const playerVoiceChannel = player.getVoiceChannel();
 
