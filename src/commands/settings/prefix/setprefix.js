@@ -1,4 +1,4 @@
-const { setGuildPrefix } = require(`${process.cwd()}/src/store/guildPrefixes`);
+const { setGuildPrefix } = require(`${process.cwd()}/src/store/guildInfo`);
 
 const handle = async (message, prefix) => {
 	const newPrefix =

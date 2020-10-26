@@ -21,6 +21,14 @@ const getHelpEmbed = (prefix) => {
 				name: `${prefix}setprefix`,
 				value: "Change prefix of the server.",
 			},
+			{
+				name: `${prefix}remallow`,
+				value: "Add current channel to the allowed channels list.",
+			},
+			{
+				name: `${prefix}remallow rm / clear`,
+				value: "Remove or Clear allowed channels list.",
+			},
 		],
 	};
 };

@@ -1,6 +1,6 @@
 const Discord = require("discord.js");
 const { checkSessionTimeout } = require("./store/guildSessions");
-const { getGuildPrefix } = require("./store/guildPrefixes");
+const { getGuildPrefix, getAllowedChannels } = require("./store/guildInfo");
 
 const loader = require("./loader");
 const config = require("../config/config.json");
@@ -20,6 +20,15 @@ client.once("ready", () => {
 });
 
 client.on("message", async (message) => {
+	// check for allowed channels
+	const allowedChannels = getAllowedChannels(message.guild.id);
+	if (
+		allowedChannels.length > 0 &&
+		!allowedChannels.includes(message.channel.id)
+	) {
+		return;
+	}
+
 	// get prefix for this guild
 	const PREFIX = getGuildPrefix(message.guild.id);
 
